@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHƯƠNG 3: Mô hình hóa và Phân tích trong DSS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0d6efd;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .hero {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            color: white;
+            padding: 110px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: float 28s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .section-header {
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 85px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50px;
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px -10px rgba(13, 110, 253, 0.25) !important;
+        }
+        .model-box {
+            border-left: 6px solid var(--primary);
+        }
+        table.data-table td, table.data-table th {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-cogs me-2"></i> DSS MODELING
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#lythuyet"><i class="fas fa-book"></i> Lý thuyết</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#thuchanh"><i class="fas fa-laptop-code"></i> Thực hành</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tracnghiem"><i class="fas fa-question-circle"></i> Trắc nghiệm (40 câu)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-3">CHƯƠNG 3</h1>
+            <h2 class="display-5 fw-light">MÔ HÌNH HÓA VÀ PHÂN TÍCH TRONG DSS</h2>
+            <p class="lead mt-4">Từ thực tế phức tạp → Mô hình an toàn → Quyết định thông minh</p>
+            <a href="#lythuyet" class="btn btn-light btn-lg px-5 py-3 mt-4 fw-semibold shadow">
+                <i class="fas fa-arrow-down me-2"></i>BẮT ĐẦU HỌC NGAY
+            </a>
+        </div>
+    </header>
+
+    <!-- LÝ THUYẾT -->
+    <section id="lythuyet" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-header text-primary display-6 mb-5 text-center">📘 NỘI DUNG LÝ THUYẾT</h2>
+
+            <!-- 3.1 -->
+            <div class="mb-5">
+                <h3 class="fw-bold text-primary"><i class="fas fa-project-diagram me-2"></i>3.1 Khái niệm về Mô hình hóa (Modeling)</h3>
+                <div class="card shadow-sm card-hover">
+                    <div class="card-body">
+                        <p class="lead">Mô hình hóa là quá trình <strong>trừu tượng hóa thực tế</strong> thành các công thức, hình ảnh hoặc cấu trúc dữ liệu để hiểu rõ hơn và giảm rủi ro.</p>
+                        <div class="alert alert-info">
+                            <strong>Tại sao cần mô hình?</strong> Thực tế quá phức tạp và đầy rủi ro. Thay vì xây thử một tòa nhà thật để xem nó có đổ không, ta xây mô hình trên phần mềm.
+                        </div>
+                        <div class="row g-4 mt-3">
+                            <div class="col-md-4">
+                                <div class="model-box p-3 bg-white rounded border">
+                                    <strong>Biến quyết định</strong><br>
+                                    <small class="text-muted">Những thứ ta kiểm soát (Số lượng hàng nhập, Giá bán...)</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="model-box p-3 bg-white rounded border">
+                                    <strong>Biến không kiểm soát</strong><br>
+                                    <small class="text-muted">Yếu tố bên ngoài (Lạm phát, Nhu cầu thị trường, Thời tiết...)</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="model-box p-3 bg-white rounded border">
+                                    <strong>Biến kết quả</strong><br>
+                                    <small class="text-muted">Mục tiêu hướng tới (Lợi nhuận, Thị phần, Sự hài lòng...)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.2 -->
+            <div class="mb-5 bg-white p-5 rounded-4 shadow-sm">
+                <h3 class="fw-bold text-primary"><i class="fas fa-clock me-2"></i>3.2 Các mô hình Tĩnh và Động</h3>
+                <table class="table table-bordered data-table">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô hình Tĩnh (Static)</th>
+                            <th>Mô hình Động (Dynamic)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Thời gian</strong></td>
+                            <td>Xét tại một thời điểm cố định</td>
+                            <td>Xét sự thay đổi theo thời gian</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tính chất</strong></td>
+                            <td>Như một bức ảnh chụp nhanh</td>
+                            <td>Như một đoạn video</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ví dụ</strong></td>
+                            <td>Bảng cân đối kế toán ngày 31/12<br>Tính thuế thu nhập cá nhân</td>
+                            <td>Dự báo dòng tiền 12 tháng<br>Mô phỏng hàng đợi tại quầy thanh toán</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert alert-success mt-3">
+                    <strong>Ví dụ sinh động:</strong> Tính số shipper cần cho 100 đơn hàng hôm nay → <strong>Tĩnh</strong>.<br>
+                    Dự báo biến động shipper theo từng giờ trong ngày lễ → <strong>Động</strong>.
+                </div>
+            </div>
+
+            <!-- 3.3 -->
+            <div class="mb-5">
+                <h3 class="fw-bold text-primary"><i class="fas fa-magic me-2"></i>3.3 Phân tích What-if, Goal Seeking và Độ nhạy</h3>
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card h-100 card-hover shadow-sm">
+                            <div class="card-body">
+                                <h5 class="text-primary">3.3.1 What-if Analysis</h5>
+                                <p><strong>Câu hỏi:</strong> “Nếu biến đầu vào thay đổi thì kết quả sẽ ra sao?”</p>
+                                <div class="bg-light p-3 rounded">
+                                    <em>Ví dụ:</em> Nếu giá nguyên liệu tăng 10%, lợi nhuận giảm bao nhiêu?
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card h-100 card-hover shadow-sm">
+                            <div class="card-body">
+                                <h5 class="text-primary">3.3.2 Goal Seeking</h5>
+                                <p><strong>Câu hỏi:</strong> “Để đạt kết quả X, biến đầu vào phải là bao nhiêu?”</p>
+                                <div class="bg-light p-3 rounded">
+                                    <em>Ví dụ:</em> Để lợi nhuận đạt 1 tỷ, phải bán bao nhiêu sản phẩm?
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card h-100 card-hover shadow-sm">
+                            <div class="card-body">
+                                <h5 class="text-primary">3.3.3 Sensitivity Analysis</h5>
+                                <p>Đo lường mức độ ảnh hưởng của từng biến lên kết quả.</p>
+                                <div class="bg-light p-3 rounded">
+                                    <em>Ví dụ:</em> Dự án nhạy cảm nhất với chi phí nhân sự.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.4 -->
+            <div class="mb-5">
+                <h3 class="fw-bold text-primary"><i class="fas fa-balance-scale me-2"></i>3.4 Giới thiệu MCDM (Multi-Criteria Decision Making)</h3>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <p class="lead">Trong thực tế, quyết định không chỉ dựa vào một tiêu chí (rẻ nhất) mà phải cân nhắc nhiều tiêu chí (tốt nhất, bền nhất, an toàn nhất...).</p>
+                        
+                        <div class="row g-4 mt-4">
+                            <div class="col-md-6">
+                                <div class="border border-primary p-4 rounded">
+                                    <h5>AHP (Analytic Hierarchy Process)</h5>
+                                    <p>Phương pháp so sánh cặp (Pairwise comparison) để xác định trọng số và thứ tự ưu tiên.</p>
+                                    <small>Ví dụ: Chọn Server → So sánh Giá vs Hiệu năng vs Bảo mật</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="border border-primary p-4 rounded">
+                                    <h5>TOPSIS</h5>
+                                    <p>Chọn phương án gần nhất với “phương án lý tưởng” và xa nhất với “phương án tồi tệ nhất”.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông điệp -->
+            <div class="bg-white p-5 rounded-4 shadow-sm text-center border border-primary">
+                <blockquote class="blockquote fs-4">
+                    "Mô hình hóa không phải là tìm ra một đáp án duy nhất đúng, mà là tạo ra một <strong>sân chơi an toàn</strong> để nhà quản lý thử nghiệm mọi kịch bản trước khi thực sự chi tiền."
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- THỰC HÀNH -->
+    <section id="thuchanh" class="py-5">
+        <div class="container">
+            <h2 class="section-header text-primary display-6 mb-5 text-center">💻 BÀI TẬP THỰC HÀNH</h2>
+
+            <!-- Bài 1: Goal Seeking -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <strong>BÀI 1:</strong> Phân tích Goal Seeking trong Excel
+                </div>
+                <div class="card-body">
+                    <p><strong>Tình huống:</strong> Lập kế hoạch khóa đào tạo CNTT ngắn hạn.</p>
+                    <ul>
+                        <li>Chi phí cố định: 10.000.000 VNĐ</li>
+                        <li>Chi phí biến đổi/học viên: 200.000 VNĐ</li>
+                        <li>Học phí: 1.500.000 VNĐ/người</li>
+                    </ul>
+                    <p><strong>Yêu cầu:</strong> Sử dụng <strong>Goal Seek</strong> trong Excel để tìm số học viên tối thiểu để hòa vốn (Lợi nhuận = 0).</p>
+                    
+                    <div class="alert alert-success mt-3">
+                        <strong>Gợi ý giải:</strong><br>
+                        Công thức Lợi nhuận = (Số HV × 1.500.000) − 10.000.000 − (Số HV × 200.000)<br>
+                        → Goal Seek: Set cell Lợi nhuận = 0 bằng cách thay đổi Số học viên.<br>
+                        <strong>Kết quả:</strong> Khoảng <strong>8</strong> học viên (làm tròn lên).
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài 2: What-if Data Table -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <strong>BÀI 2:</strong> Phân tích What-if với Data Table (1 biến)
+                </div>
+                <div class="card-body">
+                    <p>Tiếp tục tình huống Bài 1. Tạo Data Table xem lợi nhuận thay đổi khi số lượng học viên từ 5 đến 30 người (bước nhảy 5).</p>
+                    <div class="alert alert-success">
+                        <strong>Gợi ý giải:</strong><br>
+                        Sử dụng <strong>Data → What-If Analysis → Data Table</strong><br>
+                        Cột input: Số học viên (5,10,15,20,25,30)<br>
+                        Kết quả sẽ hiển thị lợi nhuận tương ứng (âm khi dưới 8 người, dương khi trên).
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài 3: MCDM -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <strong>BÀI 3:</strong> Mô hình hóa MCDM đơn giản (Phương pháp trọng số)
+                </div>
+                <div class="card-body">
+                    <p>Bạn cần chọn ngôn ngữ lập trình cho dự án mới: <strong>Java</strong> hoặc <strong>Python</strong>.</p>
+                    <p><strong>Tiêu chí & Trọng số:</strong></p>
+                    <ul>
+                        <li>Tốc độ thực thi (0.4)</li>
+                        <li>Tốc độ phát triển code (0.3)</li>
+                        <li>Cộng đồng hỗ trợ (0.3)</li>
+                    </ul>
+                    <p><strong>Yêu cầu:</strong> Cho điểm từng ngôn ngữ trên thang 10, tính điểm có trọng số và đưa ra quyết định.</p>
+                    
+                    <div class="alert alert-success mt-3">
+                        <strong>Gợi ý giải mẫu:</strong><br>
+                        <table class="table table-sm table-bordered">
+                            <thead><tr><th>Tiêu chí</th><th>Trọng số</th><th>Java</th><th>Python</th></tr></thead>
+                            <tbody>
+                                <tr><td>Tốc độ thực thi</td><td>0.4</td><td>9</td><td>6</td></tr>
+                                <tr><td>Tốc độ phát triển</td><td>0.3</td><td>6</td><td>9</td></tr>
+                                <tr><td>Cộng đồng hỗ trợ</td><td>0.3</td><td>8</td><td>9</td></tr>
+                                <tr class="table-primary"><td><strong>Tổng có trọng số</strong></td><td>1.0</td><td><strong>7.8</strong></td><td><strong>7.8</strong></td></tr>
+                            </tbody>
+                        </table>
+                        <strong>Kết luận:</strong> Hai ngôn ngữ ngang nhau về điểm số. Có thể chọn Python vì tốc độ phát triển nhanh hơn.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRẮC NGHIỆM -->
+    <section id="tracnghiem" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-header text-primary display-6">📝 TRẮC NGHIỆM – 40 CÂU HỎI CHƯƠNG 3</h2>
+                <button onclick="startQuiz()" class="btn btn-primary btn-lg px-5" id="btn-start">
+                    <i class="fas fa-play"></i> BẮT ĐẦU LÀM BÀI
+                </button>
+            </div>
+
+            <div id="quiz-area" class="d-none">
+                <div id="quiz-container" class="row g-4"></div>
+                <div class="text-center my-5">
+                    <button onclick="submitQuiz()" class="btn btn-success btn-lg px-5 py-3">
+                        <i class="fas fa-paper-plane me-2"></i> NỘP BÀI &amp; XEM ĐIỂM
+                    </button>
+                </div>
+            </div>
+
+            <div id="result-area" class="d-none text-center">
+                <div class="card shadow p-5">
+                    <h3>Kết quả của bạn</h3>
+                    <div id="score-circle" style="width:200px;height:200px;margin:30px auto;border:15px solid #0d6efd;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.2rem;color:#0d6efd;font-weight:bold;">
+                        <span id="score-text">0/40</span>
+                    </div>
+                    <p id="message" class="lead mb-4"></p>
+                    <button onclick="showAnswers()" class="btn btn-primary me-3">Xem đáp án chi tiết</button>
+                    <button onclick="restartQuiz()" class="btn btn-outline-primary">Làm lại bài</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal đáp án -->
+    <div class="modal fade" id="answerModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đáp án chi tiết Chương 3</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 text-center">
+        <small>Chương 3 - Mô hình hóa và Phân tích trong DSS • Dành cho giảng dạy</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const questions = [
+            {num:1, q:"Mô hình hóa là gì?", options:["Quá trình trừu tượng hóa thực tế thành công thức hoặc cấu trúc dữ liệu","Xây dựng thực tế 100%","Chỉ vẽ sơ đồ","Không cần thiết trong DSS"], correct:0},
+            {num:2, q:"Lý do chính để sử dụng mô hình trong DSS là gì?", options:["Giảm rủi ro và chi phí thử nghiệm thực tế","Tăng tốc độ máy tính","Làm đẹp báo cáo","Thay thế hoàn toàn con người"], correct:0},
+            {num:3, q:"Biến quyết định (Decision Variables) là gì?", options:["Những biến ta có thể kiểm soát","Biến bên ngoài không kiểm soát được","Kết quả cuối cùng","Tất cả đều là biến quyết định"], correct:0},
+            {num:4, q:"Mô hình Tĩnh (Static) có đặc điểm gì?", options:["Xét tại một thời điểm cố định, như bức ảnh","Thay đổi theo thời gian, như video","Chỉ dùng cho dự báo dài hạn","Không có ví dụ thực tế"], correct:0},
+            {num:5, q:"Mô hình Động (Dynamic) thường dùng cho việc gì?", options:["Dự báo theo thời gian và mô phỏng","Tính toán tại một thời điểm","In báo cáo tài chính","Tính thuế thu nhập"], correct:0},
+            {num:6, q:"What-if Analysis trả lời câu hỏi nào?", options:["Nếu thay đổi đầu vào thì kết quả sẽ ra sao?","Để đạt mục tiêu thì đầu vào phải là bao nhiêu?","Biến nào ảnh hưởng mạnh nhất?","Tất cả đều đúng"], correct:0},
+            {num:7, q:"Goal Seeking trả lời câu hỏi nào?", options:["Để đạt kết quả X thì đầu vào phải là bao nhiêu?","Nếu thay đổi đầu vào thì sao?","Độ nhạy của biến là bao nhiêu?","Không có câu hỏi nào"], correct:0},
+            {num:8, q:"Sensitivity Analysis dùng để làm gì?", options:["Đo lường mức độ ảnh hưởng của từng biến lên kết quả","Tìm giá trị mục tiêu","Thay đổi nhiều biến cùng lúc","Chỉ vẽ biểu đồ"], correct:0},
+            {num:9, q:"MCDM là viết tắt của gì?", options:["Multi-Criteria Decision Making","Multi-Computer Decision Model","Main Criteria Decision Method","Management Criteria Development"], correct:0},
+            {num:10, q:"Phương pháp AHP sử dụng kỹ thuật gì?", options:["So sánh cặp (Pairwise comparison)","Tìm khoảng cách lý tưởng","Chỉ tính trung bình","Không so sánh"], correct:0},
+            {num:11, q:"TOPSIS chọn phương án dựa trên tiêu chí nào?", options:["Gần phương án lý tưởng và xa phương án tồi tệ nhất","Chỉ rẻ nhất","Chỉ nhanh nhất","Không có tiêu chí"], correct:0},
+            {num:12, q:"Trong tình huống Goal Seek khóa đào tạo, số học viên tối thiểu để hòa vốn là bao nhiêu?", options:["Khoảng 8 người","5 người","30 người","Không thể tính"], correct:0},
+            {num:13, q:"Data Table trong Excel dùng để hỗ trợ phân tích nào?", options:["What-if Analysis","Goal Seeking","Sensitivity Analysis","Cả ba đều đúng"], correct:0},
+            {num:14, q:"Trong MCDM Bài 3, tiêu chí có trọng số cao nhất là gì?", options:["Tốc độ thực thi (0.4)","Tốc độ phát triển code (0.3)","Cộng đồng hỗ trợ (0.3)","Tất cả bằng nhau"], correct:0},
+            {num:15, q:"Mô hình hóa giúp nhà quản lý làm gì?", options:["Thử nghiệm mọi kịch bản an toàn trước khi chi tiền","Thay thế hoàn toàn quyết định","Chỉ tính toán nhanh","Không giúp ích gì"], correct:0},
+            // Thêm đủ 40 câu
+            {num:16, q:"Biến không kiểm soát được là gì?", options:["Yếu tố bên ngoài như lạm phát, nhu cầu thị trường","Số lượng hàng nhập","Lợi nhuận","Chi phí cố định"], correct:0},
+            {num:17, q:"Ví dụ điển hình của mô hình tĩnh là gì?", options:["Bảng cân đối kế toán ngày 31/12","Dự báo dòng tiền 12 tháng","Mô phỏng hàng đợi","Tất cả đều động"], correct:0},
+            {num:18, q:"Sensitivity Analysis thường quan tâm đến biến nào?", options:["Biến ảnh hưởng mạnh nhất đến kết quả","Biến không quan trọng","Chỉ biến quyết định","Chỉ biến kết quả"], correct:0},
+            {num:19, q:"AHP thường được dùng khi nào?", options:["Khi cần so sánh nhiều tiêu chí chủ quan","Khi chỉ có một tiêu chí","Khi dữ liệu rất đơn giản","Khi không cần trọng số"], correct:0},
+            {num:20, q:"Goal Seek là công cụ có sẵn trong phần mềm nào?", options:["Microsoft Excel","Word","PowerPoint","Photoshop"], correct:0},
+            {num:21, q:"What-if Analysis còn được gọi là gì?", options:["Phân tích giả định","Phân tích mục tiêu","Phân tích độ nhạy","Phân tích đa tiêu chí"], correct:0},
+            {num:22, q:"Trong mô hình toán học DSS, biến kết quả thường là gì?", options:["Lợi nhuận, thị phần, sự hài lòng","Giá bán","Số lượng nhập hàng","Thời tiết"], correct:0},
+            {num:23, q:"Mô hình động phù hợp với bài toán nào?", options:["Điều phối shipper theo giờ trong ngày lễ","Tính thuế thu nhập cá nhân","Bảng cân đối kế toán","Tính chi phí cố định"], correct:0},
+            {num:24, q:"Phương pháp MCDM đơn giản nhất trong bài tập là gì?", options:["Phương pháp trọng số","AHP","TOPSIS","Goal Seeking"], correct:0},
+            {num:25, q:"Khi số học viên tăng, lợi nhuận trong bài tập đào tạo sẽ như thế nào?", options:["Tăng dần sau điểm hòa vốn","Giảm dần","Không thay đổi","Luôn âm"], correct:0},
+            {num:26, q:"Pairwise comparison là kỹ thuật của phương pháp nào?", options:["AHP","TOPSIS","What-if","Goal Seeking"], correct:0},
+            {num:27, q:"Mô hình hóa trong DSS chủ yếu phục vụ cho ai?", options:["Nhà quản lý","Nhân viên kế toán","Khách hàng","Lập trình viên"], correct:0},
+            {num:28, q:"Data Table 1 biến dùng để thay đổi bao nhiêu biến đầu vào?", options:["1 biến","2 biến","Tất cả biến","Không thay đổi"], correct:0},
+            {num:29, q:"Sensitivity Analysis giúp phát hiện điều gì?", options:["Dự án nhạy cảm nhất với biến nào","Giá trị mục tiêu","Kịch bản giả định","Tất cả đều đúng"], correct:0},
+            {num:30, q:"Thông điệp chính của chương là gì?", options:["Mô hình hóa tạo sân chơi an toàn để thử nghiệm kịch bản","Mô hình luôn cho đáp án đúng duy nhất","Không cần mô hình trong DSS","Chỉ dùng cho tài chính"], correct:0},
+            {num:31, q:"Biến quyết định thường do ai kiểm soát?", options:["Nhà quản lý","Thị trường","Thời tiết","Đối thủ cạnh tranh"], correct:0},
+            {num:32, q:"Mô hình tĩnh giống với cái gì?", options:["Bức ảnh chụp nhanh","Đoạn video","Biểu đồ động","Mô phỏng 3D"], correct:0},
+            {num:33, q:"Goal Seek hoạt động theo nguyên tắc nào?", options:["Ngược lại với What-if","Giống hệt What-if","Không liên quan","Chỉ dùng cho MCDM"], correct:0},
+            {num:34, q:"Trong TOPSIS, phương án tốt nhất là phương án nào?", options:["Gần lý tưởng và xa tồi tệ nhất","Rẻ nhất","Nhanh nhất","Có nhiều tiêu chí"], correct:0},
+            {num:35, q:"Chi phí cố định trong bài tập Goal Seek là bao nhiêu?", options:["10.000.000 VNĐ","200.000 VNĐ","1.500.000 VNĐ","Không có"], correct:0},
+            {num:36, q:"Học phí mỗi học viên trong bài tập là bao nhiêu?", options:["1.500.000 VNĐ","200.000 VNĐ","10.000.000 VNĐ","500.000 VNĐ"], correct:0},
+            {num:37, q:"Khi thực hiện MCDM, bước đầu tiên thường là gì?", options:["Xác định tiêu chí và trọng số","Tính lợi nhuận","Chạy Goal Seek","Vẽ biểu đồ"], correct:0},
+            {num:38, q:"Mô hình hóa giúp giảm rủi ro ở khâu nào?", options:["Trước khi thực hiện quyết định thực tế","Sau khi đã chi tiền","Khi in báo cáo","Khi họp hành"], correct:0},
+            {num:39, q:"Phân tích độ nhạy thường được thực hiện sau khi nào?", options:["Sau khi xây dựng mô hình cơ bản","Trước khi xây mô hình","Chỉ trong MCDM","Không bao giờ"], correct:0},
+            {num:40, q:"MCDM được áp dụng nhiều trong quyết định nào?", options:["Quyết định có nhiều tiêu chí xung đột","Quyết định rất đơn giản","Chỉ quyết định tài chính","Chỉ quyết định kỹ thuật"], correct:0}
+        ];
+
+        let userAnswers = {};
+
+        function startQuiz() {
+            document.getElementById("btn-start").classList.add("d-none");
+            document.getElementById("quiz-area").classList.remove("d-none");
+            
+            const container = document.getElementById("quiz-container");
+            container.innerHTML = "";
+            
+            questions.forEach(q => {
+                let html = `
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Câu ${q.num}: ${q.q}</h5>
+                            <div id="opts-${q.num}" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+                
+                const optDiv = document.getElementById(`opts-${q.num}`);
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement("div");
+                    div.className = "form-check mb-2";
+                    div.innerHTML = `
+                        <input class="form-check-input" type="radio" name="q${q.num}" id="q${q.num}_${i}" value="${i}">
+                        <label class="form-check-label" for="q${q.num}_${i}">${opt}</label>`;
+                    optDiv.appendChild(div);
+                });
+            });
+        }
+
+        function submitQuiz() {
+            userAnswers = {};
+            let score = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    const ans = parseInt(selected.value);
+                    userAnswers[q.num] = ans;
+                    if (ans === q.correct) score++;
+                } else {
+                    userAnswers[q.num] = -1;
+                }
+            });
+            
+            document.getElementById("quiz-area").classList.add("d-none");
+            const resultArea = document.getElementById("result-area");
+            resultArea.classList.remove("d-none");
+            
+            const percent = Math.round((score / 40) * 100);
+            document.getElementById("score-text").textContent = `${score}/40`;
+            
+            let msg = "";
+            if (score >= 35) msg = "🎉 Xuất sắc! Bạn đã nắm rất vững phần Mô hình hóa & Phân tích trong DSS.";
+            else if (score >= 28) msg = "👍 Tốt! Bạn hiểu khá rõ các khái niệm chính.";
+            else if (score >= 20) msg = "😐 Cần ôn thêm phần What-if, Goal Seeking và MCDM.";
+            else msg = "📚 Hãy xem lại lý thuyết trước khi làm lại bài kiểm tra.";
+            
+            document.getElementById("message").innerHTML = msg;
+        }
+
+        function showAnswers() {
+            const modal = new bootstrap.Modal(document.getElementById("answerModal"));
+            let html = "<h5>Đáp án chi tiết:</h5>";
+            
+            questions.forEach(q => {
+                const userAns = userAnswers[q.num];
+                const isCorrect = userAns === q.correct;
+                html += `
+                <div class="mb-4 p-3 border rounded ${isCorrect ? 'border-success bg-success-subtle' : 'border-danger bg-danger-subtle'}">
+                    <strong>Câu ${q.num}:</strong> ${q.q}<br>
+                    <small class="text-success">Đáp án đúng: ${q.options[q.correct]}</small><br>
+                    ${userAns >= 0 ? `<small>Bạn chọn: ${q.options[userAns]}</small>` : '<small class="text-muted">Chưa trả lời</small>'}
+                </div>`;
+            });
+            
+            document.getElementById("modal-body").innerHTML = html;
+            modal.show();
+        }
+
+        function restartQuiz() {
+            window.location.reload();
+        }
+
+        window.onload = () => {
+            console.log("%c✅ Chương 3 - Mô hình hóa và Phân tích trong DSS đã sẵn sàng!", "color:#0d6efd;font-weight:bold");
+        };
+    </script>
+</body>
+</html>

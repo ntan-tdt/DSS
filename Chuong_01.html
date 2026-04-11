@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHƯƠNG 1: Tổng quan về Hệ hỗ trợ ra quyết định (DSS)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2Lw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary: #0d6efd;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .hero {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: float 25s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .nav-link {
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }
+        .section-header {
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50px;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .quiz-card {
+            border-left: 5px solid var(--primary);
+        }
+        .result-bar {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 50px;
+            overflow: hidden;
+        }
+        .modal-content {
+            border-radius: 20px;
+        }
+        .highlight-correct {
+            animation: highlight 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <i class="fas fa-brain me-2"></i>
+                DSS 101
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#lythuyet"><i class="fas fa-book me-1"></i> Lý thuyết</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#thuchanh"><i class="fas fa-laptop-code me-1"></i> Thực hành</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tracnghiem"><i class="fas fa-question-circle me-1"></i> Trắc nghiệm (40 câu)</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-chalkboard-teacher me-1"></i> Mục lục
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#muc11">1.1 Khái niệm về Quyết định &amp; Quản trị</a></li>
+                            <li><a class="dropdown-item" href="#muc12">1.2 Mô hình Simon</a></li>
+                            <li><a class="dropdown-item" href="#muc13">1.3 Định nghĩa &amp; Đặc điểm DSS</a></li>
+                            <li><a class="dropdown-item" href="#muc14">1.4 Phân loại DSS</a></li>
+                            <li><a class="dropdown-item" href="#muc15">1.5 Ghi chú quan trọng</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <button onclick="window.location.reload()" class="btn btn-light btn-sm fw-semibold">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h1 class="display-3 fw-bold mb-3">CHƯƠNG 1</h1>
+                    <h2 class="display-5 fw-light mb-4">TỔNG QUAN VỀ HỆ HỖ TRỢ RA QUYẾT ĐỊNH (DSS)</h2>
+                    <p class="lead mb-4">Học tập tương tác • Sinh động • Thực hành ngay trên trình duyệt</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="#lythuyet" class="btn btn-light btn-lg px-5 py-3 shadow-sm fw-semibold">
+                            <i class="fas fa-arrow-down me-2"></i>BẮT ĐẦU HỌC NGAY
+                        </a>
+                        <a href="#tracnghiem" class="btn btn-outline-light btn-lg px-5 py-3 fw-semibold">
+                            <i class="fas fa-check-circle me-2"></i>KIỂM TRA KIẾN THỨC (40 câu)
+                        </a>
+                    </div>
+                    <div class="mt-5 text-white-50 small">
+                        Dựa trên tài liệu CHƯƠNG 1.docx • Dành cho sinh viên CNTT
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- LÝ THUYẾT -->
+    <section id="lythuyet" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-header text-primary display-6 mb-5 text-center">📘 NỘI DUNG LÝ THUYẾT</h2>
+            
+            <!-- 1.1 -->
+            <div id="muc11" class="mb-5">
+                <h3 class="fw-bold text-primary"><i class="fas fa-sitemap me-2"></i>1.1 Khái niệm về Quyết định và Quản trị</h3>
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card card-hover h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><i class="fas fa-briefcase me-2"></i>1.1.1 Quản trị là gì?</h5>
+                                <p class="card-text">Quản trị là quá trình đạt được các mục tiêu của tổ chức thông qua việc <strong>lập kế hoạch, tổ chức, lãnh đạo và kiểm soát nguồn lực</strong>.</p>
+                                <div class="bg-light p-3 rounded-3">
+                                    <strong>Cốt lõi của quản trị:</strong> Chính là việc ra quyết định.<br>
+                                    <small class="text-muted">Mọi cấp độ quản lý (từ Giám đốc đến Trưởng nhóm kỹ thuật) đều phải chọn một phương án hành động.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-hover h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><i class="fas fa-lightbulb me-2"></i>1.1.2 Quyết định là gì?</h5>
+                                <p class="card-text">Quyết định là sự lựa chọn giữa các phương án thay thế để đạt được một kết quả mong muốn.</p>
+                                <div class="mt-3">
+                                    <strong>Ví dụ minh họa:</strong>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><i class="fas fa-user me-2 text-success"></i><strong>Cấp cá nhân:</strong> Bạn chọn mua Laptop Gaming hay Macbook để học lập trình?</li>
+                                        <li><i class="fas fa-building me-2 text-success"></i><strong>Cấp doanh nghiệp:</strong> Grab nên tăng giá cước vào giờ cao điểm hay giữ nguyên để giữ chân khách hàng?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-hover h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><i class="fas fa-layer-group me-2"></i>1.1.3 Phân loại cấu trúc quyết định</h5>
+                                <p class="card-text">Trong CNTT, quyết định được chia thành 3 loại:</p>
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex align-items-start">
+                                        <span class="badge bg-success rounded-pill me-3 mt-1">1</span>
+                                        <div><strong>Quyết định có cấu trúc (Structured)</strong><br>Quy trình rõ ràng, lặp đi lặp lại.<br><small>Ví dụ: Tính lương nhân viên, xuất hóa đơn.</small></div>
+                                    </div>
+                                    <div class="d-flex align-items-start">
+                                        <span class="badge bg-danger rounded-pill me-3 mt-1">2</span>
+                                        <div><strong>Quyết định phi cấu trúc (Unstructured)</strong><br>Phức tạp, không có công thức sẵn.<br><small>Ví dụ: Đầu tư vào một công nghệ mới hoàn toàn.</small></div>
+                                    </div>
+                                    <div class="d-flex align-items-start">
+                                        <span class="badge bg-warning rounded-pill me-3 mt-1">3</span>
+                                        <div><strong>Quyết định bán cấu trúc (Semi-structured)</strong><br>Cần cả máy tính + kinh nghiệm con người.<br><small><strong>Đây là địa hạt chính của DSS!</strong></small></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.2 -->
+            <div id="muc12" class="mb-5 bg-white p-4 rounded-4 shadow-sm">
+                <h3 class="fw-bold text-primary"><i class="fas fa-timeline me-2"></i>1.2 Các giai đoạn của quá trình ra quyết định (Mô hình Simon)</h3>
+                <p class="lead text-muted">Herbert Simon chia quá trình ra quyết định khoa học thành <strong>4 giai đoạn</strong>:</p>
+                <div class="row g-4 text-center">
+                    <div class="col-md-3">
+                        <div class="card card-hover border-primary h-100">
+                            <div class="card-body">
+                                <h1 class="display-1 text-primary fw-light mb-0">1</h1>
+                                <h5>Giai đoạn Tìm tòi <span class="badge bg-primary">Intelligence</span></h5>
+                                <p class="card-text">Xác định vấn đề.<br><em>Ví dụ: Doanh số website giảm 30%. Tại sao?</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card card-hover border-primary h-100">
+                            <div class="card-body">
+                                <h1 class="display-1 text-primary fw-light mb-0">2</h1>
+                                <h5>Giai đoạn Thiết kế <span class="badge bg-primary">Design</span></h5>
+                                <p class="card-text">Đưa ra các phương án giải quyết.<br><em>Ví dụ: Thuê KOL, redesign UI/UX, giảm giá 20%.</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card card-hover border-primary h-100">
+                            <div class="card-body">
+                                <h1 class="display-1 text-primary fw-light mb-0">3</h1>
+                                <h5>Giai đoạn Lựa chọn <span class="badge bg-primary">Choice</span></h5>
+                                <p class="card-text">Phân tích và chọn phương án tối ưu.<br><em>Ví dụ: Sử dụng bảng điểm để chọn redesign UI/UX.</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card card-hover border-primary h-100">
+                            <div class="card-body">
+                                <h1 class="display-1 text-primary fw-light mb-0">4</h1>
+                                <h5>Giai đoạn Thực hiện <span class="badge bg-primary">Implementation</span></h5>
+                                <p class="card-text">Triển khai và giám sát kết quả.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.3 -->
+            <div id="muc13" class="mb-5">
+                <h3 class="fw-bold text-primary"><i class="fas fa-robot me-2"></i>1.3 Định nghĩa và Đặc điểm của DSS</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-hover shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">1.3.1 Định nghĩa</h5>
+                                <p class="lead">Hệ hỗ trợ ra quyết định (DSS) là một <strong>hệ thống thông tin dựa trên máy tính</strong>, kết hợp dữ liệu và các mô hình toán học để hỗ trợ con người giải quyết các vấn đề <strong>bán cấu trúc và phi cấu trúc</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card card-hover shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">1.3.2 Đặc điểm chính của DSS</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><i class="fas fa-handshake text-success me-2"></i><strong>Hỗ trợ, không thay thế</strong> – Người quản lý vẫn là người quyết định cuối cùng.</li>
+                                    <li class="list-group-item"><i class="fas fa-sync text-success me-2"></i><strong>Tính linh hoạt</strong> – Thích ứng nhanh với thay đổi môi trường kinh doanh.</li>
+                                    <li class="list-group-item"><i class="fas fa-calculator text-success me-2"></i><strong>Sử dụng mô hình</strong> – Thống kê, tối ưu hóa, tài chính.</li>
+                                    <li class="list-group-item"><i class="fas fa-comments text-success me-2"></i><strong>Tương tác</strong> – Truy vấn What-if trực tiếp với hệ thống.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.4 -->
+            <div id="muc14" class="mb-5">
+                <h3 class="fw-bold text-primary"><i class="fas fa-object-group me-2"></i>1.4 Phân loại DSS (Theo Steven Alter)</h3>
+                <p class="lead text-center mb-4">Có <strong>5 loại chính</strong> dựa trên đối tượng mà hệ thống tập trung xử lý</p>
+                <div class="row row-cols-1 row-cols-md-5 g-4">
+                    <!-- Type 1 -->
+                    <div class="col">
+                        <div class="card card-hover h-100 text-center border-0 shadow-sm" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">
+                            <div class="card-body">
+                                <i class="fas fa-database fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">1. Data-driven DSS</h5>
+                                <p class="card-text">Tập trung vào việc truy cập và thao tác trên dữ liệu khổng lồ (Big Data).</p>
+                                <span class="badge bg-primary">Ví dụ</span><br>
+                                <small>Hệ thống báo cáo của chuỗi siêu thị dựa trên doanh số hàng ngày.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Type 2 -->
+                    <div class="col">
+                        <div class="card card-hover h-100 text-center border-0 shadow-sm" style="background: linear-gradient(135deg, #f3e5f5, #e1bee7);">
+                            <div class="card-body">
+                                <i class="fas fa-cogs fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">2. Model-driven DSS</h5>
+                                <p class="card-text">Tập trung vào các mô hình tối ưu hóa, mô phỏng.</p>
+                                <span class="badge bg-primary">Ví dụ</span><br>
+                                <small>Hệ thống tính toán lộ trình giao hàng ngắn nhất cho shipper.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Type 3 -->
+                    <div class="col">
+                        <div class="card card-hover h-100 text-center border-0 shadow-sm" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">
+                            <div class="card-body">
+                                <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">3. Knowledge-driven DSS</h5>
+                                <p class="card-text">Sử dụng các luật chuyên gia (AI) để đưa ra lời khuyên.</p>
+                                <span class="badge bg-primary">Ví dụ</span><br>
+                                <small>Hệ thống chẩn đoán lỗi hệ thống mạng tự động.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Type 4 -->
+                    <div class="col">
+                        <div class="card card-hover h-100 text-center border-0 shadow-sm" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">
+                            <div class="card-body">
+                                <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">4. Document-driven DSS</h5>
+                                <p class="card-text">Quản lý và khai phá thông tin từ tài liệu phi cấu trúc (PDF, Word, Email).</p>
+                                <span class="badge bg-primary">Ví dụ</span><br>
+                                <small>Công cụ tìm kiếm quy định pháp luật cho bộ phận Compliance.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Type 5 -->
+                    <div class="col">
+                        <div class="card card-hover h-100 text-center border-0 shadow-sm" style="background: linear-gradient(135deg, #e0f2f1, #b2dfdb);">
+                            <div class="card-body">
+                                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">5. Communication-driven &amp; Group DSS</h5>
+                                <p class="card-text">Hỗ trợ nhiều người cùng ra quyết định.</p>
+                                <span class="badge bg-primary">Ví dụ</span><br>
+                                <small>Microsoft Teams tích hợp công cụ vote và bảng trắng để họp chiến lược.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.5 -->
+            <div id="muc15" class="bg-white p-5 rounded-4 shadow-sm border border-primary">
+                <h3 class="fw-bold text-primary"><i class="fas fa-sticky-note me-2"></i>1.5 Ghi chú quan trọng cho sinh viên</h3>
+                <div class="p-4 bg-light rounded-3 text-center">
+                    <blockquote class="blockquote">
+                        <p class="fs-4">"Hệ hỗ trợ ra quyết định không phải là một chiếc hộp đen thần kỳ trả lời đúng sai, nó là một chiếc <strong>kính hiển vi</strong> giúp bạn nhìn thấy những quy luật ẩn giấu trong dữ liệu."</p>
+                        <footer class="blockquote-footer">Giảng viên CNTT</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THỰC HÀNH -->
+    <section id="thuchanh" class="py-5">
+        <div class="container">
+            <h2 class="section-header text-primary display-6 mb-5 text-center">💻 BÀI TẬP THỰC HÀNH</h2>
+            
+            <!-- Bài 1 -->
+            <div class="mb-5">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-primary fs-5 me-3">BÀI 1</span>
+                    <h4 class="mb-0">Phân tích tình huống (Thảo luận nhóm)</h4>
+                </div>
+                <div class="alert alert-info">
+                    <strong>Tình huống:</strong> Một công ty TMĐT đang đối mặt với việc tỉ lệ khách hàng rời bỏ ứng dụng (Churn rate) tăng cao.
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6>1. Vận dụng 4 giai đoạn của mô hình Simon:</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Intelligence:</strong> Xác định nguyên nhân churn (phân tích dữ liệu, khảo sát…)</li>
+                            <li class="list-group-item"><strong>Design:</strong> Đề xuất các phương án (cải thiện UX, chương trình loyalty, giảm giá…)</li>
+                            <li class="list-group-item"><strong>Choice:</strong> Chọn phương án tối ưu bằng mô hình DSS</li>
+                            <li class="list-group-item"><strong>Implementation:</strong> Triển khai và theo dõi chỉ số churn sau 30 ngày</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>2. Hệ thống DSS thuộc loại nào?</h6>
+                        <div class="alert alert-success">
+                            <strong>Chủ yếu Data-driven DSS</strong><br>
+                            Vì cần phân tích dữ liệu lớn (Big Data) về hành vi khách hàng. Có thể kết hợp Model-driven để dự báo churn.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài 2 -->
+            <div class="mb-5">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-primary fs-5 me-3">BÀI 2</span>
+                    <h4 class="mb-0">Xác định cấu trúc quyết định</h4>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle" id="table-bai2">
+                        <thead class="table-primary">
+                            <tr>
+                                <th width="60%">Hoạt động</th>
+                                <th>Loại quyết định (chọn &amp; kiểm tra)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Duyệt chi trả tiền điện hàng tháng</td>
+                                <td>
+                                    <select class="form-select form-select-sm" id="select1">
+                                        <option value="">Chọn...</option>
+                                        <option value="Structured">Có cấu trúc</option>
+                                        <option value="Semi-structured">Bán cấu trúc</option>
+                                        <option value="Unstructured">Phi cấu trúc</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lập kế hoạch phát triển sản phẩm mới trong 5 năm tới</td>
+                                <td>
+                                    <select class="form-select form-select-sm" id="select2">
+                                        <option value="">Chọn...</option>
+                                        <option value="Structured">Có cấu trúc</option>
+                                        <option value="Semi-structured">Bán cấu trúc</option>
+                                        <option value="Unstructured">Phi cấu trúc</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Phê duyệt hạn mức tín dụng cho một khách hàng mới</td>
+                                <td>
+                                    <select class="form-select form-select-sm" id="select3">
+                                        <option value="">Chọn...</option>
+                                        <option value="Structured">Có cấu trúc</option>
+                                        <option value="Semi-structured">Bán cấu trúc</option>
+                                        <option value="Unstructured">Phi cấu trúc</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tối ưu hóa số lượng hàng tồn kho dựa trên dự báo mùa vụ</td>
+                                <td>
+                                    <select class="form-select form-select-sm" id="select4">
+                                        <option value="">Chọn...</option>
+                                        <option value="Structured">Có cấu trúc</option>
+                                        <option value="Semi-structured">Bán cấu trúc</option>
+                                        <option value="Unstructured">Phi cấu trúc</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button onclick="checkBai2()" class="btn btn-primary mt-3">
+                    <i class="fas fa-check"></i> Kiểm tra đáp án
+                </button>
+                <div id="result-bai2" class="mt-3"></div>
+            </div>
+
+            <!-- Bài 3 -->
+            <div class="mb-5">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-primary fs-5 me-3">BÀI 3</span>
+                    <h4 class="mb-0">Thực hành kỹ năng What-if (Mô phỏng Excel)</h4>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <p class="text-muted">Giả sử bạn cần quyết định đầu tư vào một dự án phần mềm. Thay đổi các thông số và quan sát kết quả (giống Scenario Manager trong Excel).</p>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Chi phí đầu tư (triệu VND)</label>
+                                <input type="number" id="chiPhiDauTu" class="form-control" value="150">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Doanh thu dự kiến (triệu VND)</label>
+                                <input type="number" id="doanhThu" class="form-control" value="400">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Chi phí vận hành (triệu VND)</label>
+                                <input type="number" id="chiPhiVanHanh" class="form-control" value="80">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap mb-4">
+                            <button onclick="loadScenario(1)" class="btn btn-success">Kịch bản Lạc quan</button>
+                            <button onclick="loadScenario(2)" class="btn btn-secondary">Kịch bản Bình thường</button>
+                            <button onclick="loadScenario(3)" class="btn btn-warning">Kịch bản Bi quan</button>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <strong>Kết quả:</strong> 
+                            <span id="ketQuaLoiNhuan" class="fw-bold fs-4"></span>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6>Tư vấn cho Giám đốc (dựa trên kết quả):</h6>
+                            <textarea id="tuVanText" class="form-control" rows="3" placeholder="Viết đoạn văn ngắn của bạn..."></textarea>
+                            <button onclick="showTuVan()" class="btn btn-outline-primary mt-2">Xem gợi ý mẫu tư vấn</button>
+                            <div id="mauTuVan" class="mt-3 d-none alert alert-success"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRẮC NGHIỆM -->
+    <section id="tracnghiem" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-header text-primary display-6">📝 TRẮC NGHIỆM – 40 CÂU HỎI</h2>
+                <p class="lead">Hoàn thành để kiểm tra kiến thức chương 1.<br><strong>Thời gian gợi ý: 30 phút • Điểm tối đa: 40</strong></p>
+                <button onclick="startQuiz()" class="btn btn-primary btn-lg px-5" id="btn-start">
+                    <i class="fas fa-play-circle"></i> BẮT ĐẦU LÀM BÀI
+                </button>
+            </div>
+
+            <div id="quiz-area" class="d-none">
+                <div id="quiz-container" class="row row-cols-1"></div>
+                
+                <div class="text-center my-5">
+                    <button onclick="submitQuiz()" class="btn btn-success btn-lg px-5 py-3">
+                        <i class="fas fa-paper-plane me-2"></i> NỘP BÀI &amp; XEM ĐIỂM
+                    </button>
+                </div>
+            </div>
+
+            <!-- KẾT QUẢ -->
+            <div id="result-area" class="d-none">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center p-5">
+                        <h3 class="mb-4">Kết quả của bạn</h3>
+                        <div class="mx-auto mb-4" style="width:180px;height:180px;border-radius:50%;border:12px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--primary);" id="score-circle">
+                            <span id="score-text" class="fw-bold">0/40</span>
+                        </div>
+                        <p id="message" class="lead mb-4"></p>
+                        
+                        <div class="result-bar mx-auto mb-4" style="width:80%;max-width:400px;">
+                            <div id="progress-bar" class="h-100 bg-success" style="width:0%"></div>
+                        </div>
+                        
+                        <button onclick="showAnswers()" class="btn btn-primary mb-3">Xem đáp án chi tiết &amp; giải thích</button>
+                        <button onclick="restartQuiz()" class="btn btn-outline-primary">Làm lại bài kiểm tra</button>
+                    </div>
+                </div>
+
+                <div id="answers-detail" class="mt-5 d-none"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">Tập tin HTML được tạo tự động cho mục đích giảng dạy • Chương 1 DSS</p>
+            <small class="text-white-50">Mở file này bằng trình duyệt bất kỳ • Hoàn toàn offline • Tương tác 100%</small>
+        </div>
+    </footer>
+
+    <!-- Modal chi tiết đáp án -->
+    <div class="modal fade" id="modalDetail" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📋 Đáp án chi tiết 40 câu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body-detail">
+                    <!-- JS render -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // ====================== DỮ LIỆU BÀI 2 ======================
+        function checkBai2() {
+            const answers = {
+                select1: "Structured",
+                select2: "Unstructured",
+                select3: "Semi-structured",
+                select4: "Semi-structured"
+            };
+            
+            let correctCount = 0;
+            let html = `<div class="alert alert-info"><strong>Kết quả:</strong><ul class="mb-0">`;
+            
+            for (let i = 1; i <= 4; i++) {
+                const selected = document.getElementById(`select${i}`).value;
+                const key = `select${i}`;
+                const isCorrect = selected === answers[key];
+                if (isCorrect) correctCount++;
+                
+                const rowText = document.querySelector(`#table-bai2 tbody tr:nth-child(${i}) td:first-child`).textContent;
+                html += `<li><span class="${isCorrect ? 'text-success' : 'text-danger'}">• ${rowText}</span> → ${isCorrect ? '✅ Đúng' : '❌ Sai (đáp án: ' + answers[key] + ')'}</li>`;
+            }
+            
+            html += `</ul><p class="mt-3 mb-0 fw-bold">Bạn đúng ${correctCount}/4 câu!</p></div>`;
+            document.getElementById("result-bai2").innerHTML = html;
+        }
+
+        // ====================== BÀI 3 WHAT-IF ======================
+        function calculateProfit() {
+            const dauTu = parseFloat(document.getElementById("chiPhiDauTu").value) || 0;
+            const doanhThu = parseFloat(document.getElementById("doanhThu").value) || 0;
+            const vanHanh = parseFloat(document.getElementById("chiPhiVanHanh").value) || 0;
+            const loiNhuan = doanhThu - vanHanh - dauTu;
+            const el = document.getElementById("ketQuaLoiNhuan");
+            
+            if (loiNhuan > 0) {
+                el.innerHTML = `Lợi nhuận = <span class="text-success">+${loiNhuan.toLocaleString('vi-VN')} triệu VND</span> 💰`;
+            } else {
+                el.innerHTML = `Lợi nhuận = <span class="text-danger">${loiNhuan.toLocaleString('vi-VN')} triệu VND</span> ⚠️`;
+            }
+            return loiNhuan;
+        }
+
+        function loadScenario(n) {
+            if (n === 1) { // Lạc quan
+                document.getElementById("chiPhiDauTu").value = 150;
+                document.getElementById("doanhThu").value = 500;
+                document.getElementById("chiPhiVanHanh").value = 120;
+            } else if (n === 2) { // Bình thường
+                document.getElementById("chiPhiDauTu").value = 150;
+                document.getElementById("doanhThu").value = 350;
+                document.getElementById("chiPhiVanHanh").value = 130;
+            } else if (n === 3) { // Bi quan
+                document.getElementById("chiPhiDauTu").value = 150;
+                document.getElementById("doanhThu").value = 220;
+                document.getElementById("chiPhiVanHanh").value = 180;
+            }
+            calculateProfit();
+        }
+
+        function showTuVan() {
+            const loiNhuan = calculateProfit();
+            const el = document.getElementById("mauTuVan");
+            let text = "";
+            
+            if (loiNhuan > 100) {
+                text = `Giám đốc nên <strong>ĐẦU TƯ NGAY</strong>. Kịch bản cho thấy lợi nhuận dương mạnh, rủi ro thấp. Có thể triển khai giai đoạn 1 trong quý tới.`;
+            } else if (loiNhuan > 0) {
+                text = `Nên <strong>ĐẦU TƯ</strong> nhưng cần theo dõi chặt chẽ. Lợi nhuận dương nhưng không cao. Đề xuất thêm kịch bản What-if với biến động lãi suất.`;
+            } else {
+                text = `<strong>KHÔNG NÊN ĐẦU TƯ</strong> ở thời điểm hiện tại. Lợi nhuận âm → cần xem xét lại mô hình kinh doanh hoặc giảm chi phí vận hành.`;
+            }
+            el.innerHTML = `<strong>Gợi ý mẫu:</strong> ${text}`;
+            el.classList.remove("d-none");
+        }
+
+        // ====================== 40 CÂU TRẮC NGHIỆM ======================
+        const questions = [
+            { num: 1, q: "Quản trị là gì?", options: ["Quá trình đạt được các mục tiêu của tổ chức thông qua lập kế hoạch, tổ chức, lãnh đạo và kiểm soát nguồn lực", "Sự lựa chọn giữa các phương án thay thế", "Một hệ thống thông tin dựa trên máy tính", "Mô hình 4 giai đoạn của Simon"], correct: 0 },
+            { num: 2, q: "Cốt lõi của quản trị là gì?", options: ["Ra quyết định", "Kiểm soát nguồn lực", "Lập kế hoạch chiến lược", "Tổ chức nhân sự"], correct: 0 },
+            { num: 3, q: "Quyết định là gì?", options: ["Sự lựa chọn giữa các phương án thay thế để đạt được kết quả mong muốn", "Quy trình lặp lại hàng tháng", "Công cụ hỗ trợ máy tính", "Mô hình toán học"], correct: 0 },
+            { num: 4, q: "Ví dụ nào sau đây thuộc quyết định cấp doanh nghiệp?", options: ["Grab nên tăng giá cước giờ cao điểm hay giữ nguyên", "Chọn mua Laptop Gaming hay Macbook", "Tính lương nhân viên", "Xuất hóa đơn"], correct: 0 },
+            { num: 5, q: "Quyết định có cấu trúc (Structured) có đặc điểm gì?", options: ["Có quy trình rõ ràng, lặp đi lặp lại", "Phức tạp, không có công thức", "Chỉ cần kinh nghiệm con người", "Không thể dùng máy tính"], correct: 0 },
+            { num: 6, q: "Quyết định phi cấu trúc (Unstructured) thường gặp ở đâu?", options: ["Đầu tư vào công nghệ mới hoàn toàn", "Tính lương nhân viên", "Xuất hóa đơn", "Duyệt chi trả tiền điện"], correct: 0 },
+            { num: 7, q: "Địa hạt chính của DSS là loại quyết định nào?", options: ["Bán cấu trúc (Semi-structured)", "Có cấu trúc (Structured)", "Phi cấu trúc (Unstructured)", "Cả ba loại đều như nhau"], correct: 0 },
+            { num: 8, q: "Giai đoạn đầu tiên trong mô hình Simon là gì?", options: ["Tìm tòi (Intelligence)", "Thiết kế (Design)", "Lựa chọn (Choice)", "Thực hiện (Implementation)"], correct: 0 },
+            { num: 9, q: "Giai đoạn Thiết kế (Design) trong mô hình Simon làm gì?", options: ["Đưa ra các phương án giải quyết vấn đề", "Xác định vấn đề", "Chọn phương án tối ưu", "Triển khai và giám sát"], correct: 0 },
+            { num: 10, q: "Giai đoạn nào sử dụng bảng điểm để chọn phương án tối ưu?", options: ["Lựa chọn (Choice)", "Tìm tòi (Intelligence)", "Thiết kế (Design)", "Thực hiện (Implementation)"], correct: 0 },
+            { num: 11, q: "Herbert Simon đã chia quá trình ra quyết định thành bao nhiêu giai đoạn?", options: ["4", "3", "5", "6"], correct: 0 },
+            { num: 12, q: "Định nghĩa của DSS là gì?", options: ["Hệ thống thông tin dựa trên máy tính, kết hợp dữ liệu và mô hình toán học để hỗ trợ quyết định bán cấu trúc & phi cấu trúc", "Hệ thống tự động thay thế con người ra quyết định", "Chỉ là công cụ báo cáo dữ liệu", "Chỉ dùng cho quyết định có cấu trúc"], correct: 0 },
+            { num: 13, q: "Đặc điểm nào sau ĐÚNG về DSS?", options: ["Hỗ trợ, không thay thế người quản lý", "Thay thế hoàn toàn con người", "Chỉ dùng cho dữ liệu nhỏ", "Không có tính tương tác"], correct: 0 },
+            { num: 14, q: "Tính năng “What-if” thuộc đặc điểm nào của DSS?", options: ["Tương tác", "Hỗ trợ, không thay thế", "Tính linh hoạt", "Sử dụng mô hình"], correct: 0 },
+            { num: 15, q: "DSS có thể thích ứng nhanh với thay đổi nào?", options: ["Môi trường kinh doanh", "Chỉ thay đổi phần cứng", "Chỉ thay đổi nhân sự", "Không thay đổi gì"], correct: 0 },
+            { num: 16, q: "DSS theo Steven Alter có bao nhiêu loại chính?", options: ["5", "4", "3", "6"], correct: 0 },
+            { num: 17, q: "Data-driven DSS tập trung vào cái gì?", options: ["Truy cập và thao tác dữ liệu khổng lồ (Big Data)", "Mô hình tối ưu hóa", "Luật chuyên gia AI", "Tài liệu văn bản"], correct: 0 },
+            { num: 18, q: "Ví dụ điển hình của Model-driven DSS là gì?", options: ["Hệ thống tính lộ trình giao hàng ngắn nhất", "Hệ thống báo cáo siêu thị", "Công cụ tìm kiếm quy định pháp luật", "Microsoft Teams vote"], correct: 0 },
+            { num: 19, q: "Knowledge-driven DSS sử dụng gì để đưa ra lời khuyên?", options: ["Luật chuyên gia (AI)", "Big Data", "Mô hình tài chính", "Email và PDF"], correct: 0 },
+            { num: 20, q: "Document-driven DSS dùng để làm gì?", options: ["Khai phá thông tin từ tài liệu phi cấu trúc (PDF, Word, Email)", "Tối ưu hóa lộ trình", "Hỗ trợ nhóm họp", "Phân tích doanh số"], correct: 0 },
+            { num: 21, q: "Communication-driven & Group DSS thường dùng công cụ nào?", options: ["Microsoft Teams tích hợp vote và bảng trắng", "Hệ thống chẩn đoán lỗi mạng", "Báo cáo doanh số siêu thị", "Tính lương nhân viên"], correct: 0 },
+            { num: 22, q: "Trong tình huống churn rate tăng cao, giai đoạn Intelligence của Simon là gì?", options: ["Xác định nguyên nhân khách hàng rời bỏ", "Đưa ra phương án cải thiện UX", "Chọn phương án tối ưu", "Triển khai chương trình loyalty"], correct: 0 },
+            { num: 23, q: "DSS cho vấn đề churn rate chủ yếu thuộc loại nào?", options: ["Data-driven DSS", "Knowledge-driven DSS", "Document-driven DSS", "Communication-driven DSS"], correct: 0 },
+            { num: 24, q: "Hoạt động “Duyệt chi trả tiền điện hàng tháng” thuộc loại quyết định nào?", options: ["Có cấu trúc", "Bán cấu trúc", "Phi cấu trúc", "Cả ba đều sai"], correct: 0 },
+            { num: 25, q: "Hoạt động “Lập kế hoạch phát triển sản phẩm mới trong 5 năm tới” thuộc loại nào?", options: ["Phi cấu trúc", "Có cấu trúc", "Bán cấu trúc", "Không xác định"], correct: 0 },
+            { num: 26, q: "Hoạt động “Tối ưu hóa số lượng hàng tồn kho dựa trên dự báo mùa vụ” thuộc loại nào?", options: ["Bán cấu trúc", "Có cấu trúc", "Phi cấu trúc", "Cả ba đều đúng"], correct: 0 },
+            { num: 27, q: "DSS hỗ trợ chủ yếu loại quyết định nào?", options: ["Bán cấu trúc", "Có cấu trúc", "Phi cấu trúc", "Chỉ có cấu trúc"], correct: 0 },
+            { num: 28, q: "Mô hình nào được dùng để mô tả 4 giai đoạn ra quyết định?", options: ["Mô hình Simon", "Mô hình Steven Alter", "Mô hình Big Data", "Mô hình Excel"], correct: 0 },
+            { num: 29, q: "Đặc điểm “Sử dụng mô hình” của DSS bao gồm những gì?", options: ["Thống kê, tối ưu hóa, tài chính", "Chỉ Big Data", "Chỉ AI", "Chỉ văn bản"], correct: 0 },
+            { num: 30, q: "Ví dụ của Knowledge-driven DSS là gì?", options: ["Hệ thống chẩn đoán lỗi hệ thống mạng tự động", "Hệ thống báo cáo doanh số siêu thị", "Lộ trình giao hàng", "Microsoft Teams"], correct: 0 },
+            { num: 31, q: "DSS không thay thế mà chỉ hỗ trợ ai?", options: ["Người quản lý", "Máy tính", "Nhân viên cấp dưới", "Khách hàng"], correct: 0 },
+            { num: 32, q: "What-if Analysis thường được dùng trong DSS để làm gì?", options: ["Thử nhiều kịch bản khác nhau", "In báo cáo", "Lưu trữ tài liệu", "Gửi email"], correct: 0 },
+            { num: 33, q: "Phân loại DSS theo Steven Alter dựa trên gì?", options: ["Đối tượng mà hệ thống tập trung xử lý", "Kích thước công ty", "Ngành nghề", "Ngân sách"], correct: 0 },
+            { num: 34, q: "Document-driven DSS rất hữu ích cho bộ phận nào?", options: ["Compliance (tuân thủ pháp luật)", "Kế toán", "Marketing", "IT vận hành"], correct: 0 },
+            { num: 35, q: "Trong bài tập Excel What-if, Scenario Manager dùng để làm gì?", options: ["So sánh nhiều kịch bản (Lạc quan, Bình thường, Bi quan)", "Tính lương", "Xuất hóa đơn", "Gửi email"], correct: 0 },
+            { num: 36, q: "Cấp độ nào của quản trị cũng phải ra quyết định?", options: ["Từ Giám đốc đến Trưởng nhóm kỹ thuật", "Chỉ Giám đốc", "Chỉ nhân viên", "Chỉ khách hàng"], correct: 0 },
+            { num: 37, q: "Giai đoạn Implementation của Simon là gì?", options: ["Triển khai và giám sát kết quả", "Xác định vấn đề", "Đưa ra phương án", "Phân tích bảng điểm"], correct: 0 },
+            { num: 38, q: "DSS là viết tắt của gì?", options: ["Decision Support System", "Data Storage System", "Digital Security System", "Dynamic Simulation System"], correct: 0 },
+            { num: 39, q: "Loại DSS nào hỗ trợ nhiều người cùng ra quyết định?", options: ["Communication-driven & Group DSS", "Data-driven DSS", "Model-driven DSS", "Knowledge-driven DSS"], correct: 0 },
+            { num: 40, q: "Theo ghi chú cuối chương, DSS giống như cái gì?", options: ["Chiếc kính hiển vi giúp nhìn thấy quy luật ẩn giấu trong dữ liệu", "Hộp đen thần kỳ trả lời đúng sai", "Máy tính thay thế con người", "Báo cáo tự động"], correct: 0 }
+        ];
+
+        // ====================== XỬ LÝ QUIZ ======================
+        let userAnswers = {};
+
+        function startQuiz() {
+            document.getElementById("btn-start").classList.add("d-none");
+            const area = document.getElementById("quiz-area");
+            area.classList.remove("d-none");
+            
+            const container = document.getElementById("quiz-container");
+            container.innerHTML = "";
+            
+            questions.forEach((q, index) => {
+                let html = `
+                <div class="col-12 mb-4">
+                    <div class="card quiz-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Câu ${q.num}: ${q.q}</h5>
+                            <div class="mt-3" id="options-${q.num}"></div>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+                
+                // Render options
+                const optContainer = document.getElementById(`options-${q.num}`);
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement("div");
+                    div.className = "form-check mb-2";
+                    div.innerHTML = `
+                    <input class="form-check-input" type="radio" name="q${q.num}" id="opt${q.num}_${i}" value="${i}">
+                    <label class="form-check-label" for="opt${q.num}_${i}">${opt}</label>`;
+                    optContainer.appendChild(div);
+                });
+            });
+        }
+
+        function submitQuiz() {
+            userAnswers = {};
+            let score = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    const value = parseInt(selected.value);
+                    userAnswers[q.num] = value;
+                    if (value === q.correct) score++;
+                } else {
+                    userAnswers[q.num] = -1; // chưa trả lời
+                }
+            });
+            
+            // Hiển thị kết quả
+            document.getElementById("quiz-area").classList.add("d-none");
+            const resultArea = document.getElementById("result-area");
+            resultArea.classList.remove("d-none");
+            
+            const percent = Math.round((score / 40) * 100);
+            document.getElementById("score-text").textContent = `${score}/40`;
+            
+            // Progress bar
+            const progress = document.getElementById("progress-bar");
+            progress.style.width = `${percent}%`;
+            if (percent >= 80) progress.className = "h-100 bg-success";
+            else if (percent >= 60) progress.className = "h-100 bg-info";
+            else if (percent >= 40) progress.className = "h-100 bg-warning";
+            else progress.className = "h-100 bg-danger";
+            
+            // Message
+            const msgEl = document.getElementById("message");
+            if (score >= 35) msgEl.innerHTML = `🎉 Xuất sắc! Bạn nắm rất chắc Chương 1 DSS!`;
+            else if (score >= 28) msgEl.innerHTML = `👍 Tốt! Bạn đã hiểu khá rõ về DSS.`;
+            else if (score >= 20) msgEl.innerHTML = `😐 Còn cần ôn lại một số phần. Hãy xem lại lý thuyết nhé!`;
+            else msgEl.innerHTML = `📚 Cần ôn kỹ hơn. Hãy quay lại phần Lý thuyết trước khi làm lại!`;
+            
+            // Lưu điểm tạm
+            window.quizScore = score;
+        }
+
+        function showAnswers() {
+            const modal = new bootstrap.Modal(document.getElementById("modalDetail"));
+            const body = document.getElementById("modal-body-detail");
+            body.innerHTML = "";
+            
+            questions.forEach(q => {
+                const userAns = userAnswers[q.num];
+                const isCorrect = userAns === q.correct;
+                
+                let html = `
+                <div class="mb-4 border-bottom pb-3">
+                    <div class="d-flex justify-content-between">
+                        <strong>Câu ${q.num}:</strong>
+                        <span class="${isCorrect ? 'text-success' : 'text-danger'}">${isCorrect ? '✅ Đúng' : '❌ Sai'}</span>
+                    </div>
+                    <p class="mb-2">${q.q}</p>
+                    <div class="small">`;
+                
+                q.options.forEach((opt, i) => {
+                    let style = "";
+                    if (i === q.correct) style = 'class="text-success fw-bold"';
+                    else if (i === userAns && !isCorrect) style = 'class="text-danger"';
+                    html += `<div ${style}>• ${opt}</div>`;
+                });
+                
+                html += `</div></div>`;
+                body.innerHTML += html;
+            });
+            
+            modal.show();
+        }
+
+        function restartQuiz() {
+            window.location.reload();
+        }
+
+        // Khởi chạy khi tải trang
+        window.onload = function() {
+            console.log("%c✅ Tập tin HTML Chương 1 DSS đã sẵn sàng giảng bài!", "color:#0d6efd;font-weight:bold");
+            // Tự động tính lợi nhuận khi thay đổi input bài 3
+            const inputs = document.querySelectorAll("#chiPhiDauTu, #doanhThu, #chiPhiVanHanh");
+            inputs.forEach(input => {
+                input.addEventListener("input", calculateProfit);
+            });
+            calculateProfit(); // tính ban đầu
+        };
+    </script>
+</body>
+</html>

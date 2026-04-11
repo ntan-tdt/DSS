@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHƯƠNG 5: Hệ hỗ trợ ra quyết định dựa trên Tri thức và AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #9c27b0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .hero {
+            background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+            color: white;
+            padding: 110px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: float 32s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .section-header {
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 90px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50px;
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 35px -10px rgba(156, 39, 176, 0.3) !important;
+        }
+        .rule-box {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            border-left: 5px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <i class="fas fa-brain me-2"></i> DSS + AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#lythuyet"><i class="fas fa-book"></i> Lý thuyết</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#thuchanh"><i class="fas fa-laptop-code"></i> Thực hành</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tracnghiem"><i class="fas fa-question-circle"></i> Trắc nghiệm (40 câu)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-3">CHƯƠNG 5</h1>
+            <h2 class="display-5 fw-light">HỆ HỖ TRỢ RA QUYẾT ĐỊNH DỰA TRÊN TRI THỨC VÀ AI</h2>
+            <p class="lead mt-4">Từ Hệ chuyên gia → Machine Learning → Generative AI → Quyết định thông minh</p>
+            <a href="#lythuyet" class="btn btn-light btn-lg px-5 py-3 mt-4 fw-semibold">
+                <i class="fas fa-arrow-down me-2"></i>BẮT ĐẦU HỌC NGAY
+            </a>
+        </div>
+    </header>
+
+    <!-- LÝ THUYẾT -->
+    <section id="lythuyet" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-header display-6 mb-5 text-center" style="color:var(--primary);">📘 NỘI DUNG LÝ THUYẾT</h2>
+
+            <!-- 5.1 -->
+            <div class="mb-5">
+                <h3 class="fw-bold" style="color:var(--primary);"><i class="fas fa-user-tie me-2"></i>5.1 Hệ chuyên gia (Expert Systems - ES)</h3>
+                <div class="card shadow-sm card-hover">
+                    <div class="card-body">
+                        <p class="lead">Hệ chuyên gia là chương trình máy tính mô phỏng khả năng ra quyết định của một chuyên gia trong một lĩnh vực cụ thể.</p>
+                        
+                        <h5>5.1.1 Cấu trúc của Hệ chuyên gia</h5>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="rule-box p-4 rounded">
+                                    <strong>Cơ sở tri thức (Knowledge Base)</strong><br>
+                                    <small>Chứa sự thật và luật IF-THEN</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="rule-box p-4 rounded">
+                                    <strong>Bộ suy diễn (Inference Engine)</strong><br>
+                                    <small>"Bộ não" – thực hiện suy luận</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="rule-box p-4 rounded">
+                                    <strong>Giao diện người dùng</strong><br>
+                                    <small>Nhập dữ liệu &amp; nhận kết quả</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4">5.1.2 Ví dụ minh họa</h5>
+                        <div class="alert alert-info">
+                            <strong>MYCIN (Y tế):</strong> Chẩn đoán bệnh nhiễm trùng máu bằng cách hỏi triệu chứng và đưa ra đơn thuốc.<br><br>
+                            <strong>Hệ tư vấn máy chủ:</strong> Khuyên cấu hình server dựa trên số nhân viên và ngân sách.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5.2 -->
+            <div class="mb-5 bg-white p-5 rounded-4 shadow-sm">
+                <h3 class="fw-bold" style="color:var(--primary);"><i class="fas fa-robot me-2"></i>5.2 Ứng dụng AI và Machine Learning trong DSS hiện đại</h3>
+                <p class="lead">Sự khác biệt lớn nhất giữa DSS truyền thống và DSS hiện đại là khả năng <strong>tự học</strong>.</p>
+                
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card h-100 card-hover">
+                            <div class="card-body">
+                                <h5>5.2.1 Học máy (Machine Learning)</h5>
+                                <p>Thay vì luật cứng nhắc, hệ thống tự tìm ra quy luật từ dữ liệu cũ.</p>
+                                <ul>
+                                    <li><strong>Dự báo (Predictive Analytics):</strong> Dự đoán giá cổ phiếu, bảo trì dự đoán (Predictive Maintenance)</li>
+                                    <li><strong>Phân tích cảm xúc:</strong> Phân tích bình luận mạng xã hội để biết khách hàng đang hài lòng hay tức giận</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card h-100 card-hover">
+                            <div class="card-body">
+                                <h5>5.2.2 AI tạo sinh (Generative AI) – Xu hướng 2026</h5>
+                                <p>Sử dụng LLM để tổng hợp báo cáo hoặc soạn thảo kịch bản nhanh chóng.</p>
+                                <div class="bg-light p-3 rounded">
+                                    <em>Ví dụ:</em> "Hãy phân tích bảng doanh số tháng này và đề xuất 3 phương án giảm chi phí vận chuyển mà không làm chậm giao hàng."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5.3 -->
+            <div class="mb-5">
+                <h3 class="fw-bold" style="color:var(--primary);"><i class="fas fa-users me-2"></i>5.3 DSS nhóm và Hệ thống hỗ trợ điều hành (ESS)</h3>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card h-100 card-hover shadow-sm">
+                            <div class="card-body">
+                                <h5>5.3.1 DSS nhóm (GDSS)</h5>
+                                <p>Hỗ trợ nhóm người ra quyết định, giảm rào cản khoảng cách và tâm lý đám đông.</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Bầu chọn ẩn danh</li>
+                                    <li><i class="fas fa-check text-success"></i> Bảng trắng kỹ thuật số (Miro, FigJam)</li>
+                                    <li><i class="fas fa-check text-success"></i> Quản lý ý kiến tập trung</li>
+                                </ul>
+                                <small>Ví dụ: Hội đồng khoa học đánh giá đề tài nghiên cứu qua bình chọn trực tuyến.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 card-hover shadow-sm">
+                            <div class="card-body">
+                                <h5>5.3.2 Hệ thống hỗ trợ điều hành (ESS)</h5>
+                                <p>Thiết kế riêng cho lãnh đạo cấp cao (C-level).</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Dữ liệu vĩ mô, tình hình thị trường</li>
+                                    <li><i class="fas fa-check text-success"></i> Giao diện cực kỳ đơn giản (Dashboard trên iPad)</li>
+                                    <li><i class="fas fa-check text-success"></i> Khả năng Drill-down chi tiết</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông điệp cuối khóa -->
+            <div class="bg-white p-5 rounded-4 shadow-sm text-center border border-purple" style="border-color:var(--primary);">
+                <blockquote class="blockquote fs-4">
+                    "Công nghệ AI dù mạnh mẽ đến đâu cũng chỉ đóng vai trò trợ lý.<br>
+                    <strong>Quyết định cuối cùng nằm ở bản lĩnh, đạo đức và trí tuệ của con người.</strong><br>
+                    Hãy dùng DSS như một đòn bẩy để nâng tầm tư duy quản trị của bạn."
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- THỰC HÀNH -->
+    <section id="thuchanh" class="py-5">
+        <div class="container">
+            <h2 class="section-header display-6 mb-5 text-center" style="color:var(--primary);">💻 BÀI TẬP THỰC HÀNH</h2>
+
+            <!-- Bài 1 -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>BÀI 1:</strong> Xây dựng bộ luật cho Hệ chuyên gia (IF-THEN)
+                </div>
+                <div class="card-body">
+                    <p><strong>Tình huống:</strong> Xây dựng hệ chuyên gia nhỏ tư vấn chọn mua Laptop.</p>
+                    <p><strong>Yêu cầu:</strong> Viết ít nhất 5 luật IF-THEN.</p>
+                    <div class="alert alert-success">
+                        <strong>Gợi ý giải mẫu:</strong><br>
+                        1. IF (Nhu cầu = "Đồ họa") AND (Ngân sách > 30 triệu) THEN "Khuyên dùng: Laptop Workstation"<br>
+                        2. IF (Nhu cầu = "Lập trình") AND (Ngân sách < 20 triệu) THEN "Khuyên dùng: Laptop Gaming tầm trung"<br>
+                        3. IF (Nhu cầu = "Văn phòng") THEN "Khuyên dùng: Laptop mỏng nhẹ"<br>
+                        4. IF (Pin quan trọng = "Cao") THEN "Ưu tiên CPU tiết kiệm điện"<br>
+                        5. IF (Ngân sách > 50 triệu) THEN "Xem xét MacBook Pro hoặc Laptop cao cấp"
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài 2 -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>BÀI 2:</strong> So sánh ES và ML
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tiêu chí</th>
+                                <th>Hệ chuyên gia (ES)</th>
+                                <th>Học máy (ML)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Nguồn gốc tri thức</td>
+                                <td>Từ chuyên gia con người cung cấp luật</td>
+                                <td>Từ dữ liệu lịch sử (hệ thống tự học)</td>
+                            </tr>
+                            <tr>
+                                <td>Khả năng tự cải thiện</td>
+                                <td>Không (phải sửa luật thủ công)</td>
+                                <td>Có (cập nhật dữ liệu mới → mô hình học lại)</td>
+                            </tr>
+                            <tr>
+                                <td>Xử lý dữ liệu mới</td>
+                                <td>Dựa hoàn toàn vào luật cũ</td>
+                                <td>Có thể dự đoán trên dữ liệu chưa từng thấy</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bài 3 -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>BÀI 3:</strong> Thiết kế Dashboard cho lãnh đạo (ESS)
+                </div>
+                <div class="card-body">
+                    <p><strong>Yêu cầu:</strong> Vẽ phác thảo (trên giấy hoặc công cụ như Figma, Draw.io) một màn hình Dashboard cho Giám đốc chuỗi rạp chiếu phim.</p>
+                    <p>Ít nhất 4 chỉ số KPI quan trọng nhất.</p>
+                    <div class="alert alert-success">
+                        <strong>Gợi ý KPI mẫu:</strong><br>
+                        1. Doanh thu tuần/tháng (và so sánh với tháng trước)<br>
+                        2. Tỷ lệ lấp đầy ghế (Occupancy Rate)<br>
+                        3. Số lượng vé bán online vs tại quầy<br>
+                        4. Điểm hài lòng khách hàng (NPS hoặc Rating trung bình)<br><br>
+                        <strong>Lý do chọn:</strong> Giúp lãnh đạo nhanh chóng nắm được sức khỏe kinh doanh, phát hiện vấn đề sớm và đưa ra quyết định kịp thời.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRẮC NGHIỆM -->
+    <section id="tracnghiem" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-header display-6 text-center" style="color:var(--primary);">📝 TRẮC NGHIỆM – 40 CÂU HỎI CHƯƠNG 5</h2>
+                <button onclick="startQuiz()" class="btn btn-dark btn-lg px-5" id="btn-start">
+                    <i class="fas fa-play-circle"></i> BẮT ĐẦU LÀM BÀI
+                </button>
+            </div>
+
+            <div id="quiz-area" class="d-none">
+                <div id="quiz-container" class="row g-4"></div>
+                <div class="text-center my-5">
+                    <button onclick="submitQuiz()" class="btn btn-success btn-lg px-5 py-3">
+                        <i class="fas fa-paper-plane me-2"></i> NỘP BÀI &amp; XEM ĐIỂM
+                    </button>
+                </div>
+            </div>
+
+            <div id="result-area" class="d-none">
+                <div class="card shadow p-5 text-center">
+                    <h3>Kết quả của bạn</h3>
+                    <div id="score-circle" style="width:210px;height:210px;margin:25px auto;border:18px solid #9c27b0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;color:#9c27b0;font-weight:bold;">
+                        <span id="score-text">0/40</span>
+                    </div>
+                    <p id="message" class="lead"></p>
+                    <button onclick="showAnswers()" class="btn btn-dark me-3">Xem đáp án chi tiết</button>
+                    <button onclick="restartQuiz()" class="btn btn-outline-dark">Làm lại bài</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal đáp án -->
+    <div class="modal fade" id="answerModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đáp án chi tiết - Chương 5</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 text-center">
+        <small>Chương 5 - DSS dựa trên Tri thức và AI • Dành cho giảng dạy</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 40 câu trắc nghiệm - đã trộn thứ tự đáp án
+        const questions = [
+            {num:1, q:"Hệ chuyên gia (Expert System) là gì?", options:["Chương trình mô phỏng quyết định của chuyên gia con người","Hệ thống tự học từ dữ liệu","Công cụ vẽ dashboard","Kho dữ liệu lớn"], correct:0},
+            {num:2, q:"Bộ phận nào được gọi là \"bộ não\" của Hệ chuyên gia?", options:["Bộ suy diễn (Inference Engine)","Cơ sở tri thức","Giao diện người dùng","Cơ sở dữ liệu"], correct:0},
+            {num:3, q:"Cơ sở tri thức trong ES chứa gì?", options:["Các luật dạng IF-THEN và sự thật","Dữ liệu thô","Hình ảnh","Mã nguồn chương trình"], correct:0},
+            {num:4, q:"Hệ thống MYCIN nổi tiếng trong lĩnh vực nào?", options:["Y tế - chẩn đoán bệnh nhiễm trùng máu","Tư vấn tài chính","Thiết kế website","Quản lý kho hàng"], correct:0},
+            {num:5, q:"Điểm khác biệt lớn nhất giữa DSS truyền thống và DSS hiện đại là gì?", options:["Khả năng tự học (Learning)","Giao diện đẹp hơn","Tốc độ nhanh hơn","Chi phí rẻ hơn"], correct:0},
+            {num:6, q:"Machine Learning khác Hệ chuyên gia ở điểm nào?", options:["Tự tìm ra quy luật từ dữ liệu thay vì luật cứng nhắc","Phải có chuyên gia viết luật","Không thể dự đoán","Chỉ dùng cho y tế"], correct:0},
+            {num:7, q:"Predictive Maintenance là ứng dụng của gì?", options:["Machine Learning","Hệ chuyên gia cổ điển","Chỉ Visualization","Chỉ ESS"], correct:0},
+            {num:8, q:"Generative AI (AI tạo sinh) có thể làm gì trong DSS?", options:["Tổng hợp báo cáo, soạn thảo kịch bản nhanh chóng","Chỉ phân loại email","Chỉ vẽ biểu đồ","Chỉ lưu trữ dữ liệu"], correct:0},
+            {num:9, q:"GDSS (Group DSS) có đặc điểm nổi bật nào?", options:["Hỗ trợ nhóm ra quyết định, bầu chọn ẩn danh","Dành riêng cho cá nhân","Chỉ cho lãnh đạo cấp cao","Không có tương tác"], correct:0},
+            {num:10, q:"ESS (Executive Support System) được thiết kế chủ yếu cho ai?", options:["Lãnh đạo cấp cao (C-level)","Nhân viên văn phòng","Khách hàng","Lập trình viên"], correct:0},
+            {num:11, q:"Drill-down trong ESS có nghĩa là gì?", options:["Xem chi tiết từ tổng quát xuống mức cụ thể","Tổng hợp dữ liệu","Xóa dữ liệu","Chỉ xem dashboard"], correct:0},
+            {num:12, q:"Ví dụ điển hình của GDSS là gì?", options:["Hội đồng khoa học bình chọn đề tài nghiên cứu trực tuyến","Hệ thống chẩn đoán bệnh","Tư vấn mua laptop","Dự báo thời tiết"], correct:0},
+            {num:13, q:"AI tạo sinh năm 2026 thường dựa trên công nghệ nào?", options:["Large Language Models (LLM)","Rule-based system","Chỉ K-Means","Chỉ Excel"], correct:0},
+            {num:14, q:"Phân tích cảm xúc (Sentiment Analysis) thuộc ứng dụng nào?", options:["Machine Learning","Hệ chuyên gia cổ điển","Chỉ ESS","Chỉ GDSS"], correct:0},
+            {num:15, q:"Luật IF-THEN thường được dùng trong hệ nào?", options:["Hệ chuyên gia (ES)","Machine Learning","Generative AI","Dashboard"], correct:0},
+            {num:16, q:"Một trong những lợi ích của GDSS là gì?", options:["Giảm tâm lý đám đông nhờ bầu chọn ẩn danh","Tăng tốc độ nhập liệu","Giảm chi phí phần cứng","Tăng số lượng nhân viên"], correct:0},
+            {num:17, q:"ESS thường có giao diện như thế nào?", options:["Rất đơn giản, thường là Dashboard trên thiết bị di động","Phức tạp nhiều nút bấm","Chỉ dạng bảng tính","Chỉ dạng văn bản"], correct:0},
+            {num:18, q:"Hệ chuyên gia có khả năng tự cải thiện không?", options:["Không, phải sửa luật thủ công","Có, tự học từ dữ liệu","Có nếu kết nối internet","Không liên quan"], correct:0},
+            {num:19, q:"Generative AI có thể giúp lãnh đạo làm gì?", options:["Viết báo cáo và đề xuất phương án nhanh chóng","Chỉ tính lương","Chỉ quản lý nhân sự","Chỉ in hóa đơn"], correct:0},
+            {num:20, q:"Inference Engine làm nhiệm vụ gì?", options:["Thực hiện suy luận dựa trên luật và dữ liệu đầu vào","Lưu trữ dữ liệu","Vẽ biểu đồ","Thu thập dữ liệu từ web"], correct:0},
+            {num:21, q:"Machine Learning thuộc loại DSS nào?", options:["DSS hiện đại dựa trên AI","DSS cổ điển dựa trên luật","Chỉ ESS","Chỉ GDSS"], correct:0},
+            {num:22, q:"Dashboard trong ESS thường hiển thị gì?", options:["Các KPI quan trọng và dữ liệu vĩ mô","Chi tiết từng giao dịch","Mã nguồn chương trình","Danh sách nhân viên"], correct:0},
+            {num:23, q:"Bài tập xây dựng luật IF-THEN thuộc hệ nào?", options:["Hệ chuyên gia","Machine Learning","Generative AI","Visualization"], correct:0},
+            {num:24, q:"Predictive Analytics dùng để làm gì?", options:["Dự đoán tương lai dựa trên dữ liệu quá khứ","Chỉ phân tích quá khứ","Chỉ vẽ biểu đồ","Chỉ lưu trữ"], correct:0},
+            {num:25, q:"GDSS giúp giải quyết vấn đề gì trong nhóm?", options:["Rào cản khoảng cách và tâm lý đám đông","Vấn đề kỹ thuật máy tính","Vấn đề lương thưởng","Vấn đề ăn uống"], correct:0},
+            {num:26, q:"MYCIN là ví dụ của hệ chuyên gia trong lĩnh vực nào?", options:["Y tế","Tài chính","Giáo dục","Bán lẻ"], correct:0},
+            {num:27, q:"Generative AI là xu hướng nổi bật của năm nào?", options:["2026","2000","2010","1990"], correct:0},
+            {num:28, q:"ESS thường hỗ trợ khả năng gì quan trọng?", options:["Drill-down từ tổng quát đến chi tiết","Chỉ xem báo cáo tĩnh","Chỉ nhập dữ liệu","Chỉ xóa dữ liệu"], correct:0},
+            {num:29, q:"Trong bảng so sánh, nguồn gốc tri thức của ML đến từ đâu?", options:["Dữ liệu lịch sử","Chuyên gia viết luật","Chỉ từ sách vở","Từ giám đốc"], correct:0},
+            {num:30, q:"Hệ chuyên gia phù hợp nhất với lĩnh vực nào?", options:["Lĩnh vực cần chuyên môn sâu và quy tắc rõ ràng","Lĩnh vực dữ liệu rất lớn và thay đổi nhanh","Lĩnh vực sáng tạo nghệ thuật","Lĩnh vực thể thao"], correct:0},
+            {num:31, q:"Sentiment Analysis giúp lãnh đạo biết gì?", options:["Khách hàng đang hài lòng hay tức giận","Doanh thu tháng sau","Số lượng nhân viên","Giá cổ phiếu"], correct:0},
+            {num:32, q:"Bầu chọn ẩn danh là đặc điểm của hệ nào?", options:["GDSS","ESS","Hệ chuyên gia","Machine Learning"], correct:0},
+            {num:33, q:"AI chỉ đóng vai trò gì trong DSS?", options:["Trợ lý hỗ trợ","Thay thế hoàn toàn con người","Chỉ lưu trữ dữ liệu","Chỉ vẽ biểu đồ"], correct:0},
+            {num:34, q:"Khi thiết kế Dashboard cho ESS, cần chú trọng gì?", options:["Ít chỉ số nhưng rất quan trọng (KPI)","Nhiều chỉ số càng tốt","Chỉ màu sắc đẹp","Chỉ chữ to"], correct:0},
+            {num:35, q:"Inference Engine hoạt động dựa trên gì?", options:["Luật IF-THEN và dữ liệu đầu vào","Dữ liệu ngẫu nhiên","Chỉ hình ảnh","Chỉ âm thanh"], correct:0},
+            {num:36, q:"Machine Learning có thể xử lý dữ liệu mới chưa từng thấy không?", options:["Có (nếu mô hình được huấn luyện tốt)","Không","Chỉ nếu có luật sẵn","Chỉ trong y tế"], correct:0},
+            {num:37, q:"Thông điệp cuối chương nhấn mạnh điều gì?", options:["AI là trợ lý, quyết định cuối cùng thuộc về con người","AI sẽ thay thế hết quản lý","Không cần con người nữa","Công nghệ là tất cả"], correct:0},
+            {num:38, q:"Laptop Workstation thường được khuyên dùng khi nào?", options:["Nhu cầu đồ họa cao và ngân sách tốt","Chỉ để lướt web","Chỉ để chơi game nhẹ","Ngân sách rất thấp"], correct:0},
+            {num:39, q:"Drill-down trong ESS giúp lãnh đạo làm gì?", options:["Xem chi tiết sâu hơn từ cái nhìn tổng quát","Chỉ xem tổng quan","Xóa dữ liệu","Nhập dữ liệu mới"], correct:0},
+            {num:40, q:"Hệ thống hỗ trợ điều hành (ESS) tập trung vào loại dữ liệu nào?", options:["Dữ liệu vĩ mô và chiến lược","Dữ liệu giao dịch hàng ngày","Dữ liệu cá nhân nhân viên","Dữ liệu kỹ thuật lập trình"], correct:0}
+        ];
+
+        let userAnswers = {};
+
+        function startQuiz() {
+            document.getElementById("btn-start").classList.add("d-none");
+            document.getElementById("quiz-area").classList.remove("d-none");
+            
+            const container = document.getElementById("quiz-container");
+            container.innerHTML = "";
+            
+            questions.forEach(q => {
+                let html = `
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Câu ${q.num}: ${q.q}</h5>
+                            <div id="opts-${q.num}" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+                
+                const optDiv = document.getElementById(`opts-${q.num}`);
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement("div");
+                    div.className = "form-check mb-2";
+                    div.innerHTML = `
+                        <input class="form-check-input" type="radio" name="q${q.num}" id="q${q.num}_${i}" value="${i}">
+                        <label class="form-check-label" for="q${q.num}_${i}">${opt}</label>`;
+                    optDiv.appendChild(div);
+                });
+            });
+        }
+
+        function submitQuiz() {
+            userAnswers = {};
+            let score = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    const ans = parseInt(selected.value);
+                    userAnswers[q.num] = ans;
+                    if (ans === q.correct) score++;
+                } else {
+                    userAnswers[q.num] = -1;
+                }
+            });
+            
+            document.getElementById("quiz-area").classList.add("d-none");
+            const resultArea = document.getElementById("result-area");
+            resultArea.classList.remove("d-none");
+            
+            document.getElementById("score-text").textContent = `${score}/40`;
+            
+            let msg = "";
+            if (score >= 35) msg = "🎉 Xuất sắc! Bạn đã nắm rất vững phần DSS dựa trên Tri thức và AI.";
+            else if (score >= 28) msg = "👍 Tốt! Bạn hiểu rõ các khái niệm chính của chương.";
+            else if (score >= 20) msg = "😐 Cần ôn thêm về Expert Systems, Machine Learning và ESS.";
+            else msg = "📚 Hãy xem lại lý thuyết trước khi làm lại bài kiểm tra.";
+            
+            document.getElementById("message").innerHTML = msg;
+        }
+
+        function showAnswers() {
+            const modal = new bootstrap.Modal(document.getElementById("answerModal"));
+            let html = "<h5>Đáp án chi tiết:</h5>";
+            
+            questions.forEach(q => {
+                const userAns = userAnswers[q.num];
+                const isCorrect = userAns === q.correct;
+                html += `
+                <div class="mb-4 p-3 border rounded ${isCorrect ? 'border-success bg-success-subtle' : 'border-danger bg-danger-subtle'}">
+                    <strong>Câu ${q.num}:</strong> ${q.q}<br>
+                    <small class="text-success">Đáp án đúng: ${q.options[q.correct]}</small><br>
+                    ${userAns >= 0 ? `<small>Bạn chọn: ${q.options[userAns]}</small>` : '<small class="text-muted">Chưa trả lời</small>'}
+                </div>`;
+            });
+            
+            document.getElementById("modal-body").innerHTML = html;
+            modal.show();
+        }
+
+        function restartQuiz() {
+            window.location.reload();
+        }
+
+        window.onload = () => {
+            console.log("%c✅ Chương 5 - DSS dựa trên Tri thức và AI đã sẵn sàng!", "color:#9c27b0;font-weight:bold");
+        };
+    </script>
+</body>
+</html>

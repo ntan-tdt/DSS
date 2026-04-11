@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHƯƠNG 2: Quản trị Dữ liệu và Kho Dữ liệu (Data Warehousing)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #198754;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .hero {
+            background: linear-gradient(135deg, #198754, #146c43);
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: float 30s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .section-header {
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 90px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50px;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 30px -10px rgba(0,0,0,0.15) !important;
+        }
+        .cube {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(25deg) rotateY(35deg);
+            margin: 20px auto;
+        }
+        .fact-table {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 3px solid #198754;
+        }
+        .dim-table {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <i class="fas fa-database me-2"></i> DATA WAREHOUSE 101
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#lythuyet"><i class="fas fa-book"></i> Lý thuyết</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#thuchanh"><i class="fas fa-laptop"></i> Thực hành</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tracnghiem"><i class="fas fa-question-circle"></i> Trắc nghiệm (40 câu)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-3">CHƯƠNG 2</h1>
+            <h2 class="display-5 fw-light">QUẢN TRỊ DỮ LIỆU VÀ KHO DỮ LIỆU<br>(Data Warehousing)</h2>
+            <p class="lead mt-4">Từ dữ liệu thô → Thông tin → Tri thức → Quyết định thông minh</p>
+            <a href="#lythuyet" class="btn btn-light btn-lg px-5 py-3 mt-4 fw-semibold">
+                <i class="fas fa-arrow-down me-2"></i>BẮT ĐẦU HỌC NGAY
+            </a>
+        </div>
+    </header>
+
+    <!-- LÝ THUYẾT -->
+    <section id="lythuyet" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-header text-success display-6 mb-5 text-center">📘 NỘI DUNG LÝ THUYẾT</h2>
+
+            <!-- 2.1 -->
+            <div class="mb-5">
+                <h3 class="fw-bold text-success"><i class="fas fa-gem me-2"></i>2.1 Vai trò của dữ liệu trong DSS</h3>
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card card-hover shadow-sm">
+                            <div class="card-body">
+                                <p class="lead">Dữ liệu là <strong>tài sản chiến lược</strong>. Trong DSS, dữ liệu không chỉ để lưu trữ mà để tạo ra <strong>thông tin và tri thức</strong>.</p>
+                                <div class="alert alert-warning">
+                                    <strong>GIGO - Garbage In, Garbage Out:</strong> Dữ liệu đầu vào kém chất lượng → Quyết định sai lầm nghiêm trọng.
+                                </div>
+                                <p><strong>Dòng chảy dữ liệu:</strong> Dữ liệu thô (giao dịch) → Thông tin (báo cáo) → Quyết định (hành động)</p>
+                                
+                                <div class="bg-light p-4 rounded-3 mt-4">
+                                    <strong>Ví dụ thực tế:</strong> Chuỗi cửa hàng tiện lợi<br>
+                                    <em>Dữ liệu:</em> Khách mua bia thường mua kèm mồi nhắm lúc 18h-20h.<br>
+                                    <em>Quyết định:</em> Đặt kệ đồ nhắm ngay cạnh tủ bia → Tăng doanh số đáng kể.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card h-100 border-success">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-5x text-success mb-3"></i>
+                                <h5>Dữ liệu tốt → Quyết định tốt</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.2 -->
+            <div class="mb-5 bg-white p-5 rounded-4 shadow-sm">
+                <h3 class="fw-bold text-success"><i class="fas fa-warehouse me-2"></i>2.2 Khái niệm Kho dữ liệu (Data Warehouse) và OLAP</h3>
+                
+                <div class="row g-5">
+                    <div class="col-md-6">
+                        <h5 class="text-success">2.2.1 Kho dữ liệu (Data Warehouse - DW)</h5>
+                        <p>DW là cơ sở dữ liệu chuyên biệt, lưu trữ dữ liệu lịch sử từ nhiều nguồn để phục vụ phân tích.</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Hướng chủ đề:</strong> Tập trung vào Khách hàng, Sản phẩm, Doanh thu...</li>
+                            <li class="list-group-item"><strong>Tích hợp:</strong> Thống nhất định dạng từ nhiều nguồn</li>
+                            <li class="list-group-item"><strong>Biến đổi theo thời gian:</strong> Lưu trữ 5-10 năm để thấy xu hướng</li>
+                            <li class="list-group-item"><strong>Không biến động:</strong> Chỉ đọc (read-only), không sửa chữa</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-success">2.2.2 OLAP (Online Analytical Processing)</h5>
+                        <p>Nếu DW là “kho chứa” thì OLAP là “công cụ khai thác” – cho phép xem dữ liệu dưới nhiều góc độ nhanh chóng.</p>
+                        <div class="row text-center mt-4">
+                            <div class="col-4">
+                                <div class="p-3 border rounded bg-light">
+                                    <strong>Roll-up</strong><br><small>Tổng hợp (Năm ← Tháng)</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-3 border rounded bg-light">
+                                    <strong>Drill-down</strong><br><small>Chi tiết (Toàn quốc → Cửa hàng)</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-3 border rounded bg-light">
+                                    <strong>Dice</strong><br><small>Cắt nhỏ khối dữ liệu</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.3 -->
+            <div class="mb-5">
+                <h3 class="fw-bold text-success"><i class="fas fa-exchange-alt me-2"></i>2.3 Quy trình ETL (Extract - Transform - Load)</h3>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <p class="lead">Quy trình “làm sạch” dữ liệu trước khi đưa vào kho dữ liệu.</p>
+                        <div class="row text-center g-4">
+                            <div class="col-md-4">
+                                <div class="fact-table p-4 rounded-3">
+                                    <h4 class="text-success">1. Extract</h4>
+                                    <p class="small">Trích xuất dữ liệu từ nhiều nguồn (Excel, SQL, CRM, Social Media...)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="fact-table p-4 rounded-3">
+                                    <h4 class="text-success">2. Transform</h4>
+                                    <p class="small">Làm sạch • Chuẩn hóa định dạng • Tính toán tổng hợp</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="fact-table p-4 rounded-3">
+                                    <h4 class="text-success">3. Load</h4>
+                                    <p class="small">Nạp dữ liệu sạch vào Data Warehouse</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-4">
+                            <strong>Ví dụ:</strong> Cột NgàySinh ở hai hệ thống khác định dạng → ETL sẽ đồng nhất về một chuẩn.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.4 -->
+            <div class="mb-5">
+                <h3 class="fw-bold text-success"><i class="fas fa-cube me-2"></i>2.4 Mô hình hóa dữ liệu đa chiều</h3>
+                <p class="lead">Dữ liệu trong DSS được tổ chức dưới dạng <strong>Khối dữ liệu (Data Cube)</strong> thay vì mô hình quan hệ thông thường.</p>
+                
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card card-hover shadow-sm h-100">
+                            <div class="card-body">
+                                <h5>Fact Table (Bảng Sự kiện)</h5>
+                                <p class="text-success">Chứa các con số đo lường: Doanh thu, Số lượng bán, Chi phí...</p>
+                                <div class="fact-table p-3 text-center rounded">
+                                    <strong>Nằm ở trung tâm khối dữ liệu</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card card-hover shadow-sm h-100">
+                            <div class="card-body">
+                                <h5>Dimension Table (Bảng Chiều)</h5>
+                                <p class="text-success">Chứa thông tin mô tả để lọc: Thời gian, Địa điểm, Sản phẩm, Khách hàng...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h5>Các sơ đồ phổ biến</h5>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h6 class="text-success">Star Schema (Hình Sao) ⭐</h6>
+                                    <p><strong>Ưu điểm:</strong> Dễ hiểu, truy vấn nhanh</p>
+                                    <p>Một Fact Table ở giữa, kết nối trực tiếp với nhiều Dimension Table.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h6 class="text-success">Snowflake Schema (Bông Tuyết) ❄️</h6>
+                                    <p><strong>Ưu điểm:</strong> Tiết kiệm bộ nhớ</p>
+                                    <p>Dimension Table được chuẩn hóa thêm (chia nhỏ).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lời khuyên -->
+            <div class="bg-white p-5 rounded-4 shadow-sm border border-success">
+                <blockquote class="blockquote text-center">
+                    <p class="fs-4">"Dữ liệu trong các hệ thống vận hành (OLTP) giống như các mẩu ghi chú rời rạc. Kho dữ liệu (DW) giống như một cuốn <strong>biên niên sử</strong>. Muốn ra quyết định giỏi, bạn phải biết cách đọc cuốn biên niên sử đó thông qua OLAP."</p>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- THỰC HÀNH -->
+    <section id="thuchanh" class="py-5">
+        <div class="container">
+            <h2 class="section-header text-success display-6 mb-5 text-center">💻 BÀI TẬP THỰC HÀNH</h2>
+
+            <!-- Bài 1 -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <strong>BÀI 1:</strong> Thiết kế sơ đồ hình sao (Star Schema)
+                </div>
+                <div class="card-body">
+                    <p><strong>Yêu cầu:</strong> Thiết kế Star Schema cho hệ thống quản lý bán vé rạp chiếu phim.</p>
+                    <ul>
+                        <li><strong>Fact Table:</strong> Doanh số bán vé, Số lượng vé</li>
+                        <li><strong>Dimension Tables:</strong> Thời gian (Ngày, Giờ chiếu), Phim (Tên phim, Thể loại), Rạp (Tên rạp, Thành phố), Khách hàng (Loại thẻ thành viên)</li>
+                    </ul>
+                    <div class="alert alert-success">
+                        <i class="fas fa-lightbulb"></i> Gợi ý: Vẽ Fact Table ở giữa, các Dimension xung quanh và nối PK-FK.
+                    </div>
+                    <button class="btn btn-outline-success" onclick="alert('Trong lớp, hãy vẽ tay hoặc dùng công cụ như Lucidchart / Draw.io để thiết kế Star Schema.')">
+                        Mở công cụ vẽ online (gợi ý)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bài 2 -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <strong>BÀI 2:</strong> Quy trình ETL thủ công bằng Excel
+                </div>
+                <div class="card-body">
+                    <p>1. Giảng viên cung cấp 2 tệp Excel:<br>
+                       • Tệp A: Danh sách khách hàng (có lỗi viết hoa/thường, dòng trống)<br>
+                       • Tệp B: Lịch sử mua hàng</p>
+                    <p>2. Sử dụng hàm TRIM, PROPER, VLOOKUP hoặc <strong>Power Query</strong> để làm sạch và kết nối thành một bảng duy nhất.</p>
+                    <div class="alert alert-info">
+                        Mục tiêu: Tạo ra một bảng dữ liệu sạch để đưa vào kho dữ liệu.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài 3 -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <strong>BÀI 3:</strong> Tư duy OLAP
+                </div>
+                <div class="card-body">
+                    <p>Cho khối dữ liệu doanh thu 3 chiều: <strong>Sản phẩm</strong> (Laptop, PC), <strong>Khu vực</strong> (Hà Nội, Đà Nẵng), <strong>Thời gian</strong> (Tháng 1, Tháng 2).</p>
+                    <p><strong>Câu hỏi:</strong> Nếu quản lý muốn biết “Tổng doanh thu Laptop tại Hà Nội trong cả 2 tháng”, họ đang sử dụng thao tác OLAP nào?</p>
+                    <div class="alert alert-success mt-3">
+                        <strong>Đáp án gợi ý:</strong> Kết hợp <strong>Drill-down</strong> + <strong>Dice</strong> (cắt khối theo Sản phẩm = Laptop, Khu vực = Hà Nội, rồi Roll-up theo Thời gian).
+                    </div>
+                    <p class="mt-4">Hãy vẽ tay khối lập phương (Data Cube) minh họa 8 ô giá trị.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRẮC NGHIỆM -->
+    <section id="tracnghiem" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-header text-success display-6">📝 TRẮC NGHIỆM – 40 CÂU HỎI CHƯƠNG 2</h2>
+                <p class="lead">Kiểm tra kiến thức về Data Warehouse &amp; OLAP</p>
+                <button onclick="startQuiz()" class="btn btn-success btn-lg px-5" id="btn-start">BẮT ĐẦU LÀM BÀI</button>
+            </div>
+
+            <div id="quiz-area" class="d-none">
+                <div id="quiz-container" class="row row-cols-1 g-4"></div>
+                <div class="text-center my-5">
+                    <button onclick="submitQuiz()" class="btn btn-success btn-lg px-5 py-3">
+                        <i class="fas fa-paper-plane me-2"></i>NỘP BÀI &amp; XEM ĐIỂM
+                    </button>
+                </div>
+            </div>
+
+            <div id="result-area" class="d-none">
+                <div class="card shadow text-center p-5">
+                    <h3>Kết quả của bạn</h3>
+                    <div id="score-circle" class="mx-auto my-4" style="width:200px;height:200px;border:15px solid #198754;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;color:#198754;">
+                        <span id="score-text">0/40</span>
+                    </div>
+                    <p id="message" class="lead"></p>
+                    <div class="progress mb-4 mx-auto" style="width:70%;height:15px;">
+                        <div id="progress-bar" class="progress-bar bg-success" style="width:0%"></div>
+                    </div>
+                    <button onclick="showAnswers()" class="btn btn-success">Xem đáp án chi tiết</button>
+                    <button onclick="restartQuiz()" class="btn btn-outline-success ms-3">Làm lại</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal đáp án -->
+    <div class="modal fade" id="answerModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đáp án chi tiết - Chương 2</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 text-center">
+        <div class="container">
+            <p>Chương 2 - Quản trị Dữ liệu và Kho Dữ liệu • Tạo bởi Grok cho mục đích giảng dạy</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 40 câu trắc nghiệm Chương 2
+        const questions = [
+            {num:1, q:"Dữ liệu trong DSS có vai trò gì?", options:["Là tài sản chiến lược giúp tạo ra thông tin và tri thức","Chỉ để lưu trữ","Chỉ để in báo cáo","Không quan trọng"], correct:0},
+            {num:2, q:"GIGO nghĩa là gì?", options:["Garbage In, Garbage Out","Good Input Good Output","Great Information Great Output","General Input General Output"], correct:0},
+            {num:3, q:"Data Warehouse (DW) là gì?", options:["Cơ sở dữ liệu chuyên biệt lưu trữ dữ liệu lịch sử để phân tích","Cơ sở dữ liệu giao dịch hàng ngày","Ứng dụng chat trực tuyến","Công cụ vẽ biểu đồ"], correct:0},
+            {num:4, q:"Đặc điểm nào KHÔNG thuộc về Data Warehouse?", options:["Dữ liệu thường xuyên bị sửa đổi","Hướng chủ đề","Tích hợp dữ liệu","Biến đổi theo thời gian"], correct:0},
+            {num:5, q:"OLAP là viết tắt của gì?", options:["Online Analytical Processing","Online Transaction Processing","Offline Analytical Process","Object Logical Analysis Program"], correct:0},
+            {num:6, q:"Thao tác Roll-up trong OLAP là gì?", options:["Tổng hợp dữ liệu (từ Tháng lên Năm)","Chi tiết hóa dữ liệu","Cắt nhỏ khối dữ liệu","Xoay khối dữ liệu"], correct:0},
+            {num:7, q:"Thao tác Drill-down trong OLAP là gì?", options:["Xem chi tiết hơn (từ Toàn quốc xuống Cửa hàng)","Tổng hợp dữ liệu","Chọn một khối con","Không có thao tác này"], correct:0},
+            {num:8, q:"Quy trình ETL bao gồm những bước nào?", options:["Extract - Transform - Load","Enter - Test - Load","Extract - Transfer - Link","Edit - Transform - Load"], correct:0},
+            {num:9, q:"Bước Transform trong ETL làm gì?", options:["Làm sạch, chuẩn hóa và tính toán dữ liệu","Chỉ lấy dữ liệu từ nguồn","Chỉ nạp dữ liệu vào DW","Chỉ lưu trữ"], correct:0},
+            {num:10, q:"Fact Table trong mô hình đa chiều chứa gì?", options:["Các con số đo lường (doanh thu, số lượng...)","Thông tin mô tả","Khóa chính","Tất cả đều đúng"], correct:0},
+            {num:11, q:"Dimension Table chứa gì?", options:["Thông tin mô tả để lọc dữ liệu","Chỉ các con số","Chỉ khóa ngoại","Không chứa gì"], correct:0},
+            {num:12, q:"Sơ đồ Star Schema có đặc điểm gì?", options:["Fact Table ở giữa, kết nối trực tiếp với các Dimension","Tất cả Dimension đều được chuẩn hóa","Tiết kiệm bộ nhớ nhất","Khó truy vấn"], correct:0},
+            {num:13, q:"Snowflake Schema khác Star Schema ở điểm nào?", options:["Các Dimension được chuẩn hóa thêm (chia nhỏ)","Fact Table nằm ở giữa","Dễ hiểu hơn","Truy vấn nhanh hơn"], correct:0},
+            {num:14, q:"Dữ liệu trong DW có tính chất gì?", options:["Không biến động (read-only)","Thường xuyên cập nhật","Chỉ lưu dữ liệu hiện tại","Không có dữ liệu lịch sử"], correct:0},
+            {num:15, q:"Ví dụ về Dice trong OLAP là gì?", options:["Chọn chỉ xem Sản phẩm Điện tử tại TP.HCM trong Quý 1","Tổng hợp theo năm","Xem chi tiết từng cửa hàng","Không có ví dụ này"], correct:0},
+            {num:16, q:"Data Warehouse hướng theo cái gì?", options:["Hướng chủ đề (Subject-oriented)","Hướng giao dịch","Hướng người dùng","Hướng phần cứng"], correct:0},
+            {num:17, q:"Tại sao phải thực hiện ETL trước khi đưa dữ liệu vào DW?", options:["Để làm sạch và thống nhất dữ liệu từ nhiều nguồn","Để tăng tốc độ máy tính","Để vẽ biểu đồ","Để gửi email"], correct:0},
+            {num:18, q:"Trong ví dụ chuỗi cửa hàng tiện lợi, quyết định dựa trên dữ liệu là gì?", options:["Đặt kệ đồ nhắm cạnh tủ bia","Mua thêm bia","Đóng cửa hàng","Tăng giá"], correct:0},
+            {num:19, q:"OLTP khác OLAP ở điểm nào?", options:["OLTP dùng cho giao dịch hàng ngày, OLAP dùng cho phân tích","OLTP là kho dữ liệu","OLAP dùng cho nhập liệu","Không khác nhau"], correct:0},
+            {num:20, q:"Data Cube là gì?", options:["Khối dữ liệu đa chiều","Bảng tính Excel","Cơ sở dữ liệu quan hệ","Công cụ ETL"], correct:0},
+            {num:21, q:"Trong Star Schema, Fact Table kết nối với Dimension Table qua gì?", options:["Khóa ngoại (Foreign Key)","Khóa chính duy nhất","Index","Trigger"], correct:0},
+            {num:22, q:"Lợi ích chính của Data Warehouse là gì?", options:["Hỗ trợ ra quyết định dựa trên dữ liệu lịch sử","Tăng tốc độ nhập liệu","Giảm chi phí phần cứng","Chỉ để lưu trữ"], correct:0},
+            {num:23, q:"Power Query trong Excel dùng để làm gì trong bài tập ETL?", options:["Làm sạch và chuyển đổi dữ liệu","Vẽ biểu đồ","Gửi email","Tính lương"], correct:0},
+            {num:24, q:"Thao tác nào giúp xem dữ liệu theo nhiều góc độ nhanh chóng?", options:["OLAP","OLTP","ETL","SQL thông thường"], correct:0},
+            {num:25, q:"Dữ liệu thô sau khi qua ETL sẽ trở thành gì?", options:["Dữ liệu sạch sẵn sàng cho phân tích","Dữ liệu bị xóa","Dữ liệu trùng lặp","Dữ liệu ngẫu nhiên"], correct:0},
+            {num:26, q:"Một trong những Dimension thường gặp là gì?", options:["Thời gian","Doanh thu","Số lượng bán","Chi phí"], correct:0},
+            {num:27, q:"Snowflake Schema tiết kiệm được gì?", options:["Bộ nhớ","Thời gian truy vấn","Dễ hiểu","Tất cả đều đúng"], correct:0},
+            {num:28, q:"GIGO cảnh báo điều gì?", options:["Dữ liệu đầu vào kém → quyết định kém","Dữ liệu tốt luôn cho kết quả tốt","Không cần làm sạch dữ liệu","DW không cần chất lượng dữ liệu"], correct:0},
+            {num:29, q:"DW lưu trữ dữ liệu trong bao lâu?", options:["Nhiều năm (5-10 năm)","Chỉ dữ liệu hôm nay","Chỉ 1 tháng","Không lưu trữ"], correct:0},
+            {num:30, q:"Bài tập thiết kế Star Schema cho rạp phim, Fact Table là gì?", options:["Doanh số bán vé, Số lượng vé","Tên phim","Thành phố","Loại thẻ thành viên"], correct:0},
+            {num:31, q:"Trong OLAP, Drill-down là thao tác ngược lại với gì?", options:["Roll-up","Dice","Slice","Pivot"], correct:0},
+            {num:32, q:"ETL giúp giải quyết vấn đề gì?", options:["Dữ liệu từ nhiều nguồn có định dạng khác nhau","Máy tính chạy chậm","Người dùng không biết SQL","Không có vấn đề gì"], correct:0},
+            {num:33, q:"Dimension Table thường chứa loại dữ liệu nào?", options:["Dữ liệu mô tả (text)","Chỉ số đo lường","Khóa chính của Fact","Không chứa dữ liệu"], correct:0},
+            {num:34, q:"Star Schema phù hợp khi nào?", options:["Cần truy vấn nhanh và dễ hiểu","Cần tiết kiệm tối đa bộ nhớ","Dữ liệu cực kỳ lớn","Chỉ dùng cho OLTP"], correct:0},
+            {num:35, q:"Trong khối dữ liệu 3 chiều (Sản phẩm - Khu vực - Thời gian), muốn xem tổng theo một tiêu chí cụ thể dùng thao tác gì?", options:["Dice + Roll-up","Chỉ Drill-down","Chỉ Extract","Không cần OLAP"], correct:0},
+            {num:36, q:"Data Warehouse khác với cơ sở dữ liệu thông thường ở điểm nào?", options:["Dùng cho phân tích thay vì giao dịch","Dùng để nhập liệu nhanh","Chỉ lưu 1 năm","Không tích hợp dữ liệu"], correct:0},
+            {num:37, q:"Lời khuyên cuối chương so sánh DW với gì?", options:["Cuốn biên niên sử","Hộp đen","Máy tính cá nhân","Báo cáo giấy"], correct:0},
+            {num:38, q:"Hàm PROPER trong Excel dùng để làm gì trong ETL?", options:["Viết hoa chữ cái đầu mỗi từ","Xóa khoảng trắng","Tìm kiếm","Cộng tổng"], correct:0},
+            {num:39, q:"OLAP giúp quản lý xem dữ liệu theo bao nhiêu chiều?", options:["Nhiều chiều","Chỉ 1 chiều","Chỉ 2 chiều","Không xem theo chiều"], correct:0},
+            {num:40, q:"Mục tiêu chính của kho dữ liệu là gì?", options:["Hỗ trợ ra quyết định dựa trên phân tích dữ liệu lịch sử","Thay thế hệ thống giao dịch","Chỉ lưu email","Giảm nhân sự"], correct:0}
+        ];
+
+        let userAnswers = {};
+
+        function startQuiz() {
+            document.getElementById("btn-start").classList.add("d-none");
+            document.getElementById("quiz-area").classList.remove("d-none");
+            
+            const container = document.getElementById("quiz-container");
+            container.innerHTML = "";
+            
+            questions.forEach(q => {
+                let html = `
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Câu ${q.num}: ${q.q}</h5>
+                            <div class="mt-3" id="opts-${q.num}"></div>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+                
+                const optDiv = document.getElementById(`opts-${q.num}`);
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement("div");
+                    div.className = "form-check mb-2";
+                    div.innerHTML = `
+                        <input class="form-check-input" type="radio" name="q${q.num}" id="q${q.num}o${i}" value="${i}">
+                        <label class="form-check-label" for="q${q.num}o${i}">${opt}</label>
+                    `;
+                    optDiv.appendChild(div);
+                });
+            });
+        }
+
+        function submitQuiz() {
+            userAnswers = {};
+            let score = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    const ans = parseInt(selected.value);
+                    userAnswers[q.num] = ans;
+                    if (ans === q.correct) score++;
+                } else {
+                    userAnswers[q.num] = -1;
+                }
+            });
+            
+            document.getElementById("quiz-area").classList.add("d-none");
+            const resultArea = document.getElementById("result-area");
+            resultArea.classList.remove("d-none");
+            
+            const percent = Math.round((score / 40) * 100);
+            document.getElementById("score-text").textContent = `${score}/40`;
+            
+            const progress = document.getElementById("progress-bar");
+            progress.style.width = `${percent}%`;
+            
+            let msg = "";
+            if (score >= 36) msg = "🎉 Xuất sắc! Bạn đã nắm vững Chương 2 về Kho dữ liệu và OLAP.";
+            else if (score >= 28) msg = "👍 Tốt lắm! Bạn hiểu khá rõ về Data Warehousing.";
+            else if (score >= 20) msg = "😐 Cần ôn thêm một số khái niệm cốt lõi.";
+            else msg = "📚 Hãy xem lại lý thuyết trước khi làm lại bài kiểm tra.";
+            
+            document.getElementById("message").innerHTML = msg;
+        }
+
+        function showAnswers() {
+            const modal = new bootstrap.Modal(document.getElementById("answerModal"));
+            let html = "<h5>Đáp án chi tiết:</h5>";
+            
+            questions.forEach(q => {
+                const userAns = userAnswers[q.num];
+                const isCorrect = userAns === q.correct;
+                
+                html += `
+                <div class="mb-4 p-3 border rounded ${isCorrect ? 'border-success bg-success-subtle' : 'border-danger bg-danger-subtle'}">
+                    <strong>Câu ${q.num}:</strong> ${q.q}<br>
+                    <small>Đáp án đúng: <span class="fw-bold">${q.options[q.correct]}</span></small><br>
+                    ${userAns >= 0 ? `<small>Bạn chọn: ${q.options[userAns]}</small>` : '<small><em>Chưa trả lời</em></small>'}
+                </div>`;
+            });
+            
+            document.getElementById("modal-body").innerHTML = html;
+            modal.show();
+        }
+
+        function restartQuiz() {
+            window.location.reload();
+        }
+
+        // Khởi tạo
+        window.onload = () => {
+            console.log("%cChương 2 - Data Warehousing HTML đã sẵn sàng!", "color:#198754;font-weight:bold");
+        };
+    </script>
+</body>
+</html>

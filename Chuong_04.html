@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHƯƠNG 4: Khai phá Dữ liệu và Trí tuệ Kinh doanh (BI)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6f42c1;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .hero {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+            color: white;
+            padding: 110px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);
+            animation: float 30s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .section-header {
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 90px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50px;
+        }
+        .card-hover:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 35px -10px rgba(111, 66, 193, 0.3) !important;
+        }
+        .tech-badge {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <i class="fas fa-chart-line me-2"></i> BUSINESS INTELLIGENCE
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#lythuyet"><i class="fas fa-book"></i> Lý thuyết</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#thuchanh"><i class="fas fa-laptop-code"></i> Thực hành</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tracnghiem"><i class="fas fa-question-circle"></i> Trắc nghiệm (40 câu)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-3">CHƯƠNG 4</h1>
+            <h2 class="display-5 fw-light">KHAI PHÁ DỮ LIỆU VÀ TRÍ TUỆ KINH DOANH (BI)</h2>
+            <p class="lead mt-4">Từ dữ liệu thô → Thông tin → Kiến thức → Hành động kinh doanh thông minh</p>
+            <a href="#lythuyet" class="btn btn-light btn-lg px-5 py-3 mt-4 fw-semibold">
+                <i class="fas fa-arrow-down me-2"></i>BẮT ĐẦU HỌC NGAY
+            </a>
+        </div>
+    </header>
+
+    <!-- LÝ THUYẾT -->
+    <section id="lythuyet" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-header text-purple display-6 mb-5 text-center" style="color:var(--primary);">📘 NỘI DUNG LÝ THUYẾT</h2>
+
+            <!-- 4.1 -->
+            <div class="mb-5">
+                <h3 class="fw-bold" style="color:var(--primary);"><i class="fas fa-lightbulb me-2"></i>4.1 Tổng quan về Business Intelligence (BI)</h3>
+                <div class="card shadow-sm card-hover">
+                    <div class="card-body">
+                        <p class="lead">BI không phải là một công cụ đơn lẻ, mà là một <strong>quy trình công nghệ</strong> giúp chuyển hóa dữ liệu thô thành thông tin có ích cho hành động kinh doanh.</p>
+                        <div class="alert alert-info">
+                            <strong>Mục tiêu của BI:</strong> Trả lời 3 câu hỏi lớn:<br>
+                            • Chuyện gì đã xảy ra? (What happened?)<br>
+                            • Tại sao nó xảy ra? (Why did it happen?)<br>
+                            • Chuyện gì sẽ xảy ra tiếp theo? (What will happen next?)
+                        </div>
+                        <h6>Kiến trúc BI điển hình:</h6>
+                        <div class="row g-3 text-center">
+                            <div class="col-md-3">
+                                <div class="p-3 bg-white border rounded">
+                                    <strong>1. Nguồn dữ liệu</strong><br>
+                                    <small>ERP, CRM, Web logs...</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-white border rounded">
+                                    <strong>2. Kho dữ liệu (DW)</strong><br>
+                                    <small>Tích hợp dữ liệu</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-white border rounded">
+                                    <strong>3. Phân tích</strong><br>
+                                    <small>Data Mining / OLAP</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-white border rounded">
+                                    <strong>4. Trình diễn</strong><br>
+                                    <small>Dashboard &amp; Báo cáo</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 alert alert-success">
+                            <strong>Ví dụ thực tế:</strong> Netflix dùng BI phân tích thói quen xem phim. Nếu bạn bỏ dở phim kinh dị ở phút 20, hệ thống sẽ gợi ý phim kinh dị nhịp độ nhanh hơn để giữ chân bạn.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.2 -->
+            <div class="mb-5 bg-white p-5 rounded-4 shadow-sm">
+                <h3 class="fw-bold" style="color:var(--primary);"><i class="fas fa-search-dollar me-2"></i>4.2 Các kỹ thuật Khai phá dữ liệu (Data Mining) cơ bản</h3>
+                <div class="row g-4">
+                    <!-- Classification -->
+                    <div class="col-lg-4">
+                        <div class="card h-100 card-hover border-primary">
+                            <div class="card-body">
+                                <span class="badge bg-primary tech-badge">Học có giám sát</span>
+                                <h5 class="mt-3">Phân lớp (Classification)</h5>
+                                <p>Xếp đối tượng vào nhóm đã biết trước dựa trên đặc điểm.</p>
+                                <small><strong>Ví dụ:</strong> Gmail phân loại email thành Spam hay Thư thường.</small>
+                                <hr>
+                                <small>Thuật toán: Decision Tree, Naive Bayes, K-NN</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Clustering -->
+                    <div class="col-lg-4">
+                        <div class="card h-100 card-hover border-primary">
+                            <div class="card-body">
+                                <span class="badge bg-success tech-badge">Học không giám sát</span>
+                                <h5 class="mt-3">Phân cụm (Clustering)</h5>
+                                <p>Tự động gom nhóm các đối tượng giống nhau mà không biết trước tên nhóm.</p>
+                                <small><strong>Ví dụ:</strong> Ngân hàng chia khách hàng thành “Tiết kiệm”, “Xa xỉ”, “Nợ xấu”.</small>
+                                <hr>
+                                <small>Thuật toán phổ biến: K-Means</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Association -->
+                    <div class="col-lg-4">
+                        <div class="card h-100 card-hover border-primary">
+                            <div class="card-body">
+                                <span class="badge bg-warning tech-badge">Luật kết hợp</span>
+                                <h5 class="mt-3">Luật kết hợp (Association Rules)</h5>
+                                <p>Tìm ra các món hàng thường xuất hiện cùng nhau.</p>
+                                <small><strong>Ví dụ kinh điển:</strong> “Mua tã giấy thường mua kèm bia”</small>
+                                <hr>
+                                <small>Ứng dụng: Gợi ý sản phẩm trên Shopee, Amazon</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.3 -->
+            <div class="mb-5">
+                <h3 class="fw-bold" style="color:var(--primary);"><i class="fas fa-chart-bar me-2"></i>4.3 Trực quan hóa dữ liệu (Data Visualization)</h3>
+                <div class="card shadow-sm card-hover">
+                    <div class="card-body">
+                        <p class="lead">"Một bức tranh có giá trị bằng một nghìn lời nói". Trực quan hóa giúp não bộ nắm bắt xu hướng nhanh hơn bảng số khô khan.</p>
+                        <div class="row g-4 mt-3">
+                            <div class="col-md-3 text-center">
+                                <div class="p-3 border rounded">
+                                    <i class="fas fa-chart-line fa-3x text-primary mb-2"></i>
+                                    <strong>Biểu đồ Đường</strong><br>
+                                    <small>Xem xu hướng theo thời gian</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="p-3 border rounded">
+                                    <i class="fas fa-chart-bar fa-3x text-primary mb-2"></i>
+                                    <strong>Biểu đồ Cột</strong><br>
+                                    <small>So sánh giữa các nhóm</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="p-3 border rounded">
+                                    <i class="fas fa-chart-pie fa-3x text-primary mb-2"></i>
+                                    <strong>Biểu đồ Tròn</strong><br>
+                                    <small>Xem tỉ trọng / thị phần</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="p-3 border rounded">
+                                    <i class="fas fa-fire fa-3x text-primary mb-2"></i>
+                                    <strong>Heatmap</strong><br>
+                                    <small>Xem mức độ tập trung</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning mt-4">
+                            <strong>Nguyên tắc vàng:</strong> Đừng làm biểu đồ quá phức tạp. Tập trung vào <strong>Data Storytelling</strong> – kể chuyện bằng dữ liệu.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lời kết -->
+            <div class="bg-white p-5 rounded-4 shadow-sm text-center border border-purple" style="border-color:var(--primary);">
+                <blockquote class="blockquote fs-4">
+                    "Khai phá dữ liệu không phải là dùng thuật toán phức tạp nhất, mà là <strong>đặt ra câu hỏi đúng nhất</strong> cho đống dữ liệu bạn đang có."
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- THỰC HÀNH -->
+    <section id="thuchanh" class="py-5">
+        <div class="container">
+            <h2 class="section-header display-6 mb-5 text-center" style="color:var(--primary);">💻 BÀI TẬP THỰC HÀNH</h2>
+
+            <!-- Bài 1 -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>BÀI 1:</strong> Tư duy Phân lớp và Phân cụm
+                </div>
+                <div class="card-body">
+                    <p><strong>Xác định loại kỹ thuật Data Mining cho từng bài toán:</strong></p>
+                    <ol>
+                        <li>Dựa vào lịch sử thanh toán, xác định giao dịch thẻ tín dụng là "Hợp lệ" hay "Gian lận".</li>
+                        <li>Dựa vào sở thích âm nhạc của người dùng Spotify để chia thành các nhóm "Fan Rock", "Fan Pop", "Fan Jazz".</li>
+                        <li>Dự đoán bệnh nhân có bị tiểu đường hay không dựa trên chỉ số xét nghiệm máu.</li>
+                    </ol>
+                    <div class="alert alert-success">
+                        <strong>Gợi ý đáp án:</strong><br>
+                        1. <strong>Phân lớp (Classification)</strong> – Học có giám sát<br>
+                        2. <strong>Phân cụm (Clustering)</strong> – Học không giám sát<br>
+                        3. <strong>Phân lớp (Classification)</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài 2 -->
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>BÀI 2:</strong> Phân tích Luật kết hợp (Thủ công)
+                </div>
+                <div class="card-body">
+                    <p>4 hóa đơn tại cửa hàng tiện lợi:</p>
+                    <ul>
+                        <li>HĐ1: {Sữa, Bánh mì}</li>
+                        <li>HĐ2: {Sữa, Tã, Bia, Trứng}</li>
+                        <li>HĐ3: {Sữa, Tã, Bia, Bánh mì}</li>
+                        <li>HĐ4: {Tã, Bia, Trứng}</li>
+                    </ul>
+                    <p><strong>Yêu cầu:</strong> Tính <strong>độ hỗ trợ (Support)</strong> của cặp {Tã, Bia}.</p>
+                    <div class="alert alert-success">
+                        <strong>Giải chi tiết:</strong><br>
+                        Cặp {Tã, Bia} xuất hiện trong HĐ2, HĐ3, HĐ4 → 3/4 hóa đơn.<br>
+                        <strong>Support = 3/4 = 0.75 (75%)</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài 3 -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>BÀI 3:</strong> Thực hành Trực quan hóa dữ liệu
+                </div>
+                <div class="card-body">
+                    <p>Giảng viên cung cấp file CSV doanh số 12 tháng của 3 sản phẩm: Điện thoại, Laptop, Máy tính bảng.</p>
+                    <p><strong>Yêu cầu:</strong></p>
+                    <ul>
+                        <li>Vẽ biểu đồ đường so sánh doanh số 3 sản phẩm theo thời gian.</li>
+                        <li>Vẽ biểu đồ cột chồng (Stacked Bar) xem tổng doanh thu mỗi tháng.</li>
+                        <li>Nhận xét: Tháng nào doanh số cao nhất? Sản phẩm nào đang sụt giảm?</li>
+                    </ul>
+                    <div class="alert alert-info">
+                        <strong>Gợi ý:</strong> Sử dụng Excel hoặc Power BI. Tập trung vào việc kể chuyện dữ liệu (Data Storytelling).
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRẮC NGHIỆM -->
+    <section id="tracnghiem" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-header display-6 text-center" style="color:var(--primary);">📝 TRẮC NGHIỆM – 40 CÂU HỎI CHƯƠNG 4</h2>
+                <button onclick="startQuiz()" class="btn btn-dark btn-lg px-5" id="btn-start">
+                    <i class="fas fa-play-circle"></i> BẮT ĐẦU LÀM BÀI
+                </button>
+            </div>
+
+            <div id="quiz-area" class="d-none">
+                <div id="quiz-container" class="row g-4"></div>
+                <div class="text-center my-5">
+                    <button onclick="submitQuiz()" class="btn btn-success btn-lg px-5 py-3">
+                        <i class="fas fa-paper-plane me-2"></i> NỘP BÀI &amp; XEM ĐIỂM
+                    </button>
+                </div>
+            </div>
+
+            <div id="result-area" class="d-none">
+                <div class="card shadow p-5 text-center">
+                    <h3>Kết quả của bạn</h3>
+                    <div id="score-circle" style="width:210px;height:210px;margin:25px auto;border:18px solid #6f42c1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;color:#6f42c1;font-weight:bold;">
+                        <span id="score-text">0/40</span>
+                    </div>
+                    <p id="message" class="lead"></p>
+                    <button onclick="showAnswers()" class="btn btn-dark me-3">Xem đáp án chi tiết</button>
+                    <button onclick="restartQuiz()" class="btn btn-outline-dark">Làm lại</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal đáp án -->
+    <div class="modal fade" id="answerModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đáp án chi tiết - Chương 4</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 text-center">
+        <small>Chương 4 - Khai phá Dữ liệu và Business Intelligence • Dành cho giảng dạy</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const questions = [
+            {num:1, q:"Business Intelligence (BI) là gì?", options:["Quy trình chuyển hóa dữ liệu thô thành thông tin kinh doanh","Một công cụ duy nhất","Chỉ là kho dữ liệu","Chỉ là dashboard"], correct:0},
+            {num:2, q:"Mục tiêu chính của BI là trả lời những câu hỏi nào?", options:["What happened? Why? What will happen next?","Chỉ What happened","Chỉ How to code","Chỉ về phần cứng"], correct:0},
+            {num:3, q:"Thành phần thứ tư trong kiến trúc BI điển hình là gì?", options:["Trình diễn (Dashboard)","Nguồn dữ liệu","Kho dữ liệu","Phân tích"], correct:0},
+            {num:4, q:"Netflix sử dụng BI để làm gì?", options:["Phân tích thói quen xem phim và gợi ý nội dung","Bán vé xem phim","Quản lý nhân sự","Tính lương"], correct:0},
+            {num:5, q:"Data Mining là gì?", options:["Tìm ra các mẫu và quy luật ẩn trong dữ liệu lớn","Chỉ lưu trữ dữ liệu","Vẽ biểu đồ","Nhập liệu"], correct:0},
+            {num:6, q:"Phân lớp (Classification) thuộc loại học nào?", options:["Học có giám sát","Học không giám sát","Học tăng cường","Không thuộc loại học nào"], correct:0},
+            {num:7, q:"Ví dụ điển hình của Classification là gì?", options:["Gmail phân loại email Spam hay Thư thường","Gom nhóm khách hàng ngân hàng","Tìm luật kết hợp mua hàng","Tất cả đều đúng"], correct:0},
+            {num:8, q:"Phân cụm (Clustering) thuộc loại học nào?", options:["Học không giám sát","Học có giám sát","Học có nhãn","Không phải Data Mining"], correct:0},
+            {num:9, q:"Thuật toán phổ biến cho Clustering là gì?", options:["K-Means","Decision Tree","Naive Bayes","Linear Regression"], correct:0},
+            {num:10, q:"Luật kết hợp (Association Rules) thường dùng để làm gì?", options:["Tìm sản phẩm thường mua cùng nhau","Phân loại email","Dự đoán bệnh","Gom nhóm khách hàng"], correct:0},
+            {num:11, q:"Ví dụ kinh điển của Association Rules là gì?", options:["Mua tã giấy thường mua kèm bia","Phân loại Spam","Gom nhóm fan nhạc","Dự đoán tiểu đường"], correct:0},
+            {num:12, q:"Trực quan hóa dữ liệu giúp ích gì?", options:["Giúp não bộ nắm bắt xu hướng nhanh hơn","Chỉ làm cho đẹp","Thay thế hoàn toàn phân tích","Không có lợi ích"], correct:0},
+            {num:13, q:"Biểu đồ nào phù hợp để xem xu hướng theo thời gian?", options:["Biểu đồ Đường (Line chart)","Biểu đồ Tròn","Biểu đồ Cột","Heatmap"], correct:0},
+            {num:14, q:"Biểu đồ nào dùng để so sánh giá trị giữa các nhóm?", options:["Biểu đồ Cột (Bar chart)","Biểu đồ Đường","Biểu đồ Tròn","Scatter plot"], correct:0},
+            {num:15, q:"Heatmap thường dùng để hiển thị gì?", options:["Mức độ tập trung / mật độ","Tỉ trọng thị phần","Xu hướng thời gian","So sánh hai nhóm"], correct:0},
+            {num:16, q:"Data Storytelling nghĩa là gì?", options:["Kể chuyện bằng dữ liệu","Viết truyện khoa học","Vẽ tranh","Chỉ làm dashboard"], correct:0},
+            {num:17, q:"Trong bài tập luật kết hợp, Support của cặp {Tã, Bia} là bao nhiêu?", options:["0.75 (3/4)","0.5 (2/4)","1.0 (4/4)","0.25 (1/4)"], correct:0},
+            {num:18, q:"Bài toán dự đoán bệnh tiểu đường thuộc kỹ thuật nào?", options:["Classification","Clustering","Association Rules","Visualization"], correct:0},
+            {num:19, q:"Bài toán chia nhóm fan nhạc trên Spotify thuộc kỹ thuật nào?", options:["Clustering","Classification","Association","Visualization"], correct:0},
+            {num:20, q:"BI giúp trả lời câu hỏi ở mức nào?", options:["Cả mô tả, chẩn đoán và dự đoán","Chỉ mô tả","Chỉ dự đoán","Chỉ chẩn đoán"], correct:0},
+            {num:21, q:"Nguồn dữ liệu của BI có thể là gì?", options:["ERP, CRM, Web logs","Chỉ Excel","Chỉ Word","Chỉ hình ảnh"], correct:0},
+            {num:22, q:"Phân lớp cần gì để huấn luyện?", options:["Dữ liệu có nhãn (labeled data)","Dữ liệu không nhãn","Không cần dữ liệu","Chỉ cần công thức"], correct:0},
+            {num:23, q:"K-Means là thuật toán thuộc loại nào?", options:["Clustering","Classification","Regression","Association"], correct:0},
+            {num:24, q:"Amazon dùng Association Rules để làm gì?", options:["Gợi ý sản phẩm thường mua cùng","Phân loại khách hàng","Dự báo doanh thu","Tất cả đều đúng"], correct:0},
+            {num:25, q:"Nguyên tắc vàng của Data Visualization là gì?", options:["Đơn giản và tập trung vào thông điệp","Làm càng phức tạp càng tốt","Dùng nhiều màu nhất có thể","Không cần chú thích"], correct:0},
+            {num:26, q:"Biểu đồ Tròn phù hợp nhất khi nào?", options:["Xem tỉ trọng / thị phần","Xem xu hướng thời gian","So sánh nhiều nhóm","Xem mật độ"], correct:0},
+            {num:27, q:"Trong BI, Dashboard thuộc giai đoạn nào?", options:["Trình diễn","Nguồn dữ liệu","Kho dữ liệu","Phân tích"], correct:0},
+            {num:28, q:"Data Mining thuộc giai đoạn nào trong BI?", options:["Phân tích","Trình diễn","Nguồn dữ liệu","Lưu trữ"], correct:0},
+            {num:29, q:"Học không giám sát nghĩa là gì?", options:["Không có nhãn lớp sẵn","Có nhãn lớp sẵn","Cần giáo viên hướng dẫn","Chỉ dùng Excel"], correct:0},
+            {num:30, q:"Decision Tree là thuật toán thuộc kỹ thuật nào?", options:["Classification","Clustering","Association Rules","Visualization"], correct:0},
+            {num:31, q:"Bài toán phát hiện gian lận thẻ tín dụng thuộc loại nào?", options:["Classification","Clustering","Association","Visualization"], correct:0},
+            {num:32, q:"Support trong Association Rules đo lường gì?", options:["Tần suất xuất hiện của tập mục","Độ tin cậy","Lift","Confidence"], correct:0},
+            {num:33, q:"Power BI và Excel chủ yếu dùng để làm gì trong bài tập?", options:["Trực quan hóa dữ liệu","Data Mining phức tạp","Xây dựng kho dữ liệu","Tất cả đều đúng"], correct:0},
+            {num:34, q:"BI khác OLTP ở điểm nào?", options:["BI tập trung vào phân tích, OLTP tập trung vào giao dịch","BI chỉ lưu dữ liệu","OLTP dùng để phân tích","Không khác nhau"], correct:0},
+            {num:35, q:"Netflix gợi ý phim dựa trên kỹ thuật nào?", options:["Data Mining & BI","Chỉ Visualization","Chỉ ETL","Chỉ kho dữ liệu"], correct:0},
+            {num:36, q:"Khi vẽ biểu đồ đường, mục đích chính là gì?", options:["Xem xu hướng theo thời gian","So sánh tỉ trọng","Xem mật độ","Tất cả đều đúng"], correct:0},
+            {num:37, q:"Câu hỏi đúng nhất trong Data Mining là gì?", options:["Đặt ra câu hỏi đúng cho dữ liệu","Dùng thuật toán phức tạp nhất","Thu thập càng nhiều dữ liệu càng tốt","Chỉ vẽ biểu đồ đẹp"], correct:0},
+            {num:38, q:"Stacked Bar Chart dùng để làm gì?", options:["Xem tổng và thành phần theo nhóm","Xem xu hướng đơn","Xem tỉ trọng","Xem mối tương quan"], correct:0},
+            {num:39, q:"BI giúp doanh nghiệp làm gì?", options:["Hỗ trợ ra quyết định dựa trên dữ liệu","Thay thế hoàn toàn con người","Chỉ làm báo cáo","Chỉ lưu trữ dữ liệu"], correct:0},
+            {num:40, q:"Lời kết của chương nhấn mạnh điều gì?", options:["Đặt ra câu hỏi đúng quan trọng hơn dùng thuật toán phức tạp","Thuật toán càng phức tạp càng tốt","Không cần trực quan hóa","Chỉ cần kho dữ liệu"], correct:0}
+        ];
+
+        let userAnswers = {};
+
+        function startQuiz() {
+            document.getElementById("btn-start").classList.add("d-none");
+            document.getElementById("quiz-area").classList.remove("d-none");
+            
+            const container = document.getElementById("quiz-container");
+            container.innerHTML = "";
+            
+            questions.forEach(q => {
+                let html = `
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Câu ${q.num}: ${q.q}</h5>
+                            <div id="opts-${q.num}" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+                
+                const optDiv = document.getElementById(`opts-${q.num}`);
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement("div");
+                    div.className = "form-check mb-2";
+                    div.innerHTML = `
+                        <input class="form-check-input" type="radio" name="q${q.num}" id="q${q.num}_${i}" value="${i}">
+                        <label class="form-check-label" for="q${q.num}_${i}">${opt}</label>`;
+                    optDiv.appendChild(div);
+                });
+            });
+        }
+
+        function submitQuiz() {
+            userAnswers = {};
+            let score = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    const ans = parseInt(selected.value);
+                    userAnswers[q.num] = ans;
+                    if (ans === q.correct) score++;
+                } else {
+                    userAnswers[q.num] = -1;
+                }
+            });
+            
+            document.getElementById("quiz-area").classList.add("d-none");
+            const resultArea = document.getElementById("result-area");
+            resultArea.classList.remove("d-none");
+            
+            const percent = Math.round((score / 40) * 100);
+            document.getElementById("score-text").textContent = `${score}/40`;
+            
+            let msg = "";
+            if (score >= 35) msg = "🎉 Xuất sắc! Bạn đã nắm rất vững Business Intelligence & Data Mining.";
+            else if (score >= 28) msg = "👍 Tốt! Bạn hiểu rõ các kỹ thuật chính của chương.";
+            else if (score >= 20) msg = "😐 Cần ôn lại phần Classification, Clustering và Visualization.";
+            else msg = "📚 Hãy xem lại lý thuyết trước khi làm lại bài kiểm tra.";
+            
+            document.getElementById("message").innerHTML = msg;
+        }
+
+        function showAnswers() {
+            const modal = new bootstrap.Modal(document.getElementById("answerModal"));
+            let html = "<h5>Đáp án chi tiết:</h5>";
+            
+            questions.forEach(q => {
+                const userAns = userAnswers[q.num];
+                const isCorrect = userAns === q.correct;
+                html += `
+                <div class="mb-4 p-3 border rounded ${isCorrect ? 'border-success bg-success-subtle' : 'border-danger bg-danger-subtle'}">
+                    <strong>Câu ${q.num}:</strong> ${q.q}<br>
+                    <small class="text-success">Đáp án đúng: ${q.options[q.correct]}</small><br>
+                    ${userAns >= 0 ? `<small>Bạn chọn: ${q.options[userAns]}</small>` : '<small class="text-muted">Chưa trả lời</small>'}
+                </div>`;
+            });
+            
+            document.getElementById("modal-body").innerHTML = html;
+            modal.show();
+        }
+
+        function restartQuiz() {
+            window.location.reload();
+        }
+
+        window.onload = () => {
+            console.log("%c✅ Chương 4 - Khai phá Dữ liệu và BI đã sẵn sàng!", "color:#6f42c1;font-weight:bold");
+        };
+    </script>
+</body>
+</html>
