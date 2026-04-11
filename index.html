@@ -1,62 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index Page</title>
+    <title>HỆ HỖ TRỢ RA QUYẾT ĐỊNH (DSS)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #5B86E5, #36D1DC); /* Blue and Purple Gradient */
+            background: linear-gradient(135deg, #5B86E5, #36D1DC);
             background-image: url('backgr_02.png');
             background-size: cover;
-            color: white;
-        }
-        .logo {
-            display: block;
-            margin: 50px auto;
-            width: 200px;
-        }
-        .menu {
+            background-attachment: fixed;
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
-            margin-bottom: 50px;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .menu button {
-            background-color: transparent;
-            border: 2px solid #fff;
-            color: #fff;
-            border-radius: 5px;
-            padding: 10px 20px;
-            margin: 0 10px;
-            transition: all 0.3s ease;
-        }
-        .menu button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+        
+        .header {
             text-align: center;
-            padding: 20px;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease-in;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .menu-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .menu button {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+            border: 2px solid white;
+            color: white;
+            padding: 18px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .menu button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .menu button:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+        
+        footer {
             background-color: rgba(0, 0, 0, 0.7);
+            text-align: center;
+            padding: 25px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        footer p {
+            margin: 0;
+            font-size: 0.95rem;
         }
     </style>
 </head>
 <body>
-    <!-- Logo đã xóa để menu sạch hơn -->
-    <div class="menu">
-        <button onclick="location.href='Chuong_01.html'">Chương 01</button>
-        <button onclick="location.href='Chuong_02.html'">Chương 02</button>
-        <button onclick="location.href='Chuong_03.html'">Chương 03</button>
-        <button onclick="location.href='Chuong_04.html'">Chương 04</button>
-        <button onclick="location.href='Chuong_05.html'">Chương 05</button>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🎓 HỆ HỖ TRỢ RA QUYẾT ĐỊNH</h1>
+        <h1 style="font-size: 2.5rem; margin-top: 5px;">(DSS)</h1>
     </div>
+    
+    <!-- MENU -->
+    <div class="menu-container">
+        <div class="menu">
+            <button onclick="location.href='Chuong_01.html'" title="Chương 1: Tổng quan DSS">
+                <i class="fas fa-book me-2"></i>Chương 01
+            </button>
+            <button onclick="location.href='Chuong_02.html'" title="Chương 2: Data Warehouse">
+                <i class="fas fa-database me-2"></i>Chương 02
+            </button>
+            <button onclick="location.href='Chuong_03.html'" title="Chương 3: Mô hình hóa">
+                <i class="fas fa-cogs me-2"></i>Chương 03
+            </button>
+            <button onclick="location.href='Chuong_04.html'" title="Chương 4: Business Intelligence">
+                <i class="fas fa-chart-line me-2"></i>Chương 04
+            </button>
+            <button onclick="location.href='Chuong_05.html'" title="Chương 5: DSS & AI">
+                <i class="fas fa-brain me-2"></i>Chương 05
+            </button>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
     <footer>
-        <p>&copy; 2026 TanNQ. All rights reserved.</p>
+        <p>&copy; 2026 VHU - Hệ Hỗ Trợ Ra Quyết Định • TanNQ</p>
     </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
