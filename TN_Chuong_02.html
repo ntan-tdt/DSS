@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm DSS - Chương 2: Đạt Được Lợi Thế Cạnh Tranh Với DSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .question-card { transition: all 0.3s ease; }
+        .option-label { transition: all 0.2s ease; }
+        .option-label:hover { background-color: #f3f4f6; }
+        .answer-reveal { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-blue-700">📋 Trắc Nghiệm Ôn Tập</h1>
+                    <p class="text-2xl text-gray-700 mt-2">Chương 2: Đạt Được Lợi Thế Cạnh Tranh Với DSS</p>
+                    <p class="text-gray-500">50 câu hỏi • 5 phần</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="toggleMode()" class="px-6 py-3 bg-blue-600 text-white rounded-2xl flex items-center gap-2 hover:bg-blue-700">
+                        <i class="fas fa-user-graduate"></i>
+                        <span id="modeText">Chế độ Sinh viên</span>
+                    </button>
+                    <button onclick="requestPassword()" class="px-6 py-3 bg-emerald-600 text-white rounded-2xl flex items-center gap-2 hover:bg-emerald-700">
+                        <i class="fas fa-key"></i>
+                        <span>Xem Đáp Án (GV)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between mb-6 bg-white p-5 rounded-2xl shadow">
+            <div class="flex items-center gap-4">
+                <span class="font-medium">Tiến độ:</span>
+                <div class="w-80 h-3 bg-gray-200 rounded-full">
+                    <div id="progressBar" class="h-full bg-blue-600 rounded-full w-0 transition-all"></div>
+                </div>
+            </div>
+            <button onclick="submitQuiz()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-medium">
+                Nộp bài & Xem kết quả
+            </button>
+        </div>
+
+        <div id="questionsContainer" class="space-y-10"></div>
+
+        <!-- Password Modal -->
+        <div id="passwordModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div class="bg-white rounded-3xl p-8 w-full max-w-md">
+                <h3 class="text-2xl font-bold mb-6">🔑 Xác thực Giáo viên</h3>
+                <input type="password" id="passwordInput" placeholder="Nhập mật khẩu" 
+                       class="w-full px-5 py-4 border rounded-2xl text-lg focus:outline-none focus:border-emerald-500 mb-4">
+                <div class="flex gap-4">
+                    <button onclick="checkPassword()" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-medium">Xác nhận</button>
+                    <button onclick="closeModal()" class="flex-1 py-4 bg-gray-300 rounded-2xl font-medium">Hủy</button>
+                </div>
+                <p id="errorMsg" class="text-red-500 mt-4 hidden text-center">Mật khẩu không đúng!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TEACHER_PASSWORD = "giaoVien123";   // ← Thay đổi mật khẩu ở đây nếu muốn
+
+        const answerKey = {
+            1:"B",2:"A",3:"B",4:"A",5:"B",6:"B",7:"B",8:"A",9:"B",10:"B",
+            11:"A",12:"B",13:"B",14:"B",15:"B",16:"B",17:"B",18:"B",19:"B",20:"B",
+            21:"B",22:"B",23:"B",24:"B",25:"B",26:"B",27:"B",28:"B",29:"B",30:"B",
+            31:"B",32:"A",33:"B",34:"A",35:"B",36:"D",37:"B",38:"C",39:"B",40:"B",
+            41:"B",42:"B",43:"B",44:"B",45:"B",46:"B",47:"A",48:"B",49:"B",50:"B"
+        };
+
+        const questions = [
+            {id:1, level:"Nhận biết", text:"Một hệ thống hỗ trợ ra quyết định (DSS) được coi là mang lại lợi thế cạnh tranh khi và chỉ khi đáp ứng được các tiêu chí nào sau đây?", options:{A:"Được sử dụng rộng rãi, chi phí đầu tư thấp và công nghệ hiện đại.",B:"Trở thành sức mạnh đáng kể của tổ chức, có tính độc quyền và bền vững ít nhất 3 năm.",C:"Có khả năng tự động hóa toàn bộ quy trình và thay thế nhân sự cấp cao.",D:"Được xây dựng trên nền tảng phần cứng đắt tiền nhất và có tốc độ xử lý nhanh nhất."}},
+            {id:2, level:"Thông hiểu", text:"Điểm khác biệt cốt lõi về mục tiêu giữa việc tái thiết kế Hệ thống Xử lý Giao dịch (TPS) và xây dựng một DSS mới là gì?", options:{A:"TPS tập trung vào hiệu suất xử lý dữ liệu, trong khi DSS tập trung vào hiệu quả của quá trình ra quyết định.",B:"TPS chỉ dành cho nhân viên cấp thấp, còn DSS chỉ dành cho giám đốc điều hành.",C:"TPS luôn tốn kém hơn do yêu cầu về tính toàn vẹn dữ liệu khắt khe hơn DSS.",D:"TPS phục vụ mục đích lưu trữ lịch sử, còn DSS chỉ phục vụ dự báo tương lai."}},
+            {id:3, level:"Nhận biết", text:"Theo định nghĩa hẹp trong tài liệu, Hệ thống Thông tin Chiến lược (SIS) được thiết kế nhằm mục đích gì?", options:{A:"Để tối ưu hóa việc lập bảng lương và quản trị nhân sự định kỳ.",B:"Để thay đổi mục tiêu, sản phẩm, dịch vụ hoặc các mối quan hệ môi trường của tổ chức.",C:"Để cung cấp các báo cáo định kỳ bằng văn bản giấy cho quản lý cấp trung.",D:"Để thay thế hoàn toàn các hệ thống mạng nội bộ (Intranet)."}},
+            {id:4, level:"Thông hiểu", text:"Khái niệm SIS theo cách tiếp cận của Neumann (1994) có điểm gì khác so với định nghĩa truyền thống?", options:{A:"Coi bất kỳ hệ thống thông tin nào giúp doanh nghiệp cạnh tranh đều là SIS.",B:"Chỉ giới hạn SIS trong các hệ thống xử lý giao dịch thương mại điện tử.",C:"Cho rằng SIS chỉ là một tập con của Hệ thống thông tin quản lý (MIS).",D:"Nhấn mạnh SIS phải là một hệ thống độc lập hoàn toàn với dữ liệu của TPS."}},
+            {id:5, level:"Thông hiểu", text:"DSS có thể giúp doanh nghiệp giành lợi thế thông qua việc cải thiện kiểm soát chiến lược như thế nào?", options:{A:"Bằng cách loại bỏ sự cần thiết của các báo cáo tài chính hàng năm.",B:"Bằng cách cung cấp thông tin kịp thời để giám sát hiệu suất và điều chỉnh hướng đi của tổ chức.",C:"Bằng cách tự động hóa việc ra quyết định mà không cần sự can thiệp của con người.",D:"Bằng cách giảm số lượng các cấp quản lý trong sơ đồ tổ chức."}},
+            {id:6, level:"Thông hiểu", text:"Một \"Cổng thông tin hỗ trợ quyết định\" (Decision Web Portal) tạo ra lợi thế cạnh tranh bằng cách nào?", options:{A:"Giới hạn quyền truy cập thông tin chỉ trong nội bộ ban giám đốc.",B:"Đồng bộ hóa thông tin cá nhân hóa và mở rộng hỗ trợ quyết định tới đối tác và khách hàng.",C:"Thay thế tất cả các kênh giao tiếp trực tiếp của doanh nghiệp.",D:"Tăng cường quảng cáo sản phẩm đại trà đến mọi phân khúc khách hàng."}},
+            {id:7, level:"Nhận biết", text:"Theo quan điểm của Porter và Millar (1985), Công nghệ thông tin ảnh hưởng đến cạnh tranh thông qua:", options:{A:"Việc cắt giảm tối đa nhân sự trong mọi bộ phận.",B:"Thay đổi cấu trúc ngành và hỗ trợ các chiến lược dẫn đầu về chi phí hoặc khác biệt hóa.",C:"Việc loại bỏ hoàn toàn các đối thủ cạnh tranh nhỏ lẻ trong ngành.",D:"Tập trung duy nhất vào việc cải thiện mối quan hệ với các cơ quan quản lý nhà nước."}},
+            {id:8, level:"Thông hiểu", text:"Tại sao khả năng hỗ trợ quyết định của nhiều công ty hiện nay thường bị phân mảnh?", options:{A:"Do các hệ thống hỗ trợ như data mart hay bảng tính Excel tồn tại cô lập và khó truy cập đồng bộ.",B:"Do doanh nghiệp đầu tư quá nhiều vào các hệ thống ERP tích hợp.",C:"Do sự thiếu hụt các chuyên gia CNTT có trình độ cao.",D:"Do chi phí lưu trữ dữ liệu trên đám mây quá đắt đỏ."}},
+            {id:9, level:"Nhận biết", text:"Đối với một khoản đầu tư CNTT mang tính chiến lược, mục tiêu thời gian hoàn vốn (payback) thực tế được xác định là:", options:{A:"Dưới 6 tháng để đảm bảo tính thời sự của công nghệ.",B:"Khoảng 3 năm, ngay cả trong bối cảnh công nghệ thay đổi nhanh chóng.",C:"Đúng 10 năm để tương ứng với vòng đời của các hệ thống Mainframe.",D:"Không cần xác định thời gian hoàn vốn nếu hệ thống đó là độc quyền."}},
+            {id:10, level:"Thông hiểu", text:"Vai trò của \"Communications-driven DSS\" trong việc giành lợi thế cạnh tranh là gì?", options:{A:"Tự động hóa việc gửi email quảng cáo tới khách hàng.",B:"Hỗ trợ các đội ngũ làm việc toàn cầu cộng tác và ra quyết định không bị rào cản địa lý.",C:"Giảm nhu cầu sử dụng mạng Internet trong doanh nghiệp.",D:"Chỉ phục vụ việc truyền tải các thông báo nội bộ từ ban lãnh đạo."}},
+            {id:11, level:"Nhận biết", text:"Xu hướng công nghệ nào hiện nay được coi là \"nhiệm vụ then chốt\" (mission-critical) đối với hầu hết các doanh nghiệp?", options:{A:"Công nghệ mạng (Network technologies) với băng thông rộng và kiến trúc mở.",B:"Các hệ thống máy tính độc lập (Stand-alone) không kết nối Internet.",C:"Các phần mềm xử lý văn bản truyền thống chạy trên hệ điều hành DOS.",D:"Việc lưu trữ dữ liệu trên các thiết bị ngoại vi rời như đĩa mềm hoặc băng từ."}},
+            {id:12, level:"Thông hiểu", text:"Tác động tích cực của xu hướng phần mềm nguồn mở (Open source) đối với DSS là:", options:{A:"Tăng chi phí bản quyền và sự phụ thuộc vào các nhà cung cấp phần mềm lớn.",B:"Cho phép phần mềm tiến hóa nhanh hơn thông qua việc đọc, sửa đổi và phân phối mã nguồn.",C:"Giảm khả năng tùy biến của hệ thống theo nhu cầu riêng biệt của doanh nghiệp.",D:"Ngăn cản việc tích hợp DSS với các hệ thống Web server như Apache."}},
+            {id:13, level:"Thông hiểu", text:"Công nghệ trực quan hóa (Visualization) giúp nhà quản lý ra quyết định tốt hơn thông qua việc:", options:{A:"Thay thế các con số bằng hình ảnh mang tính giải trí đơn thuần.",B:"Mô phỏng và \"dùng thử\" các sản phẩm mới trong định dạng có thể tương tác và cảm nhận thực tế.",C:"Tự động loại bỏ các dữ liệu sai lệch mà không cần thông báo cho người dùng.",D:"Giới hạn lượng thông tin hiển thị để tránh gây mỏi mắt cho người điều hành."}},
+            {id:14, level:"Thông hiểu", text:"Trong bối cạnh e-business, World Wide Web đóng vai trò gì ngoài việc nhập đơn hàng?", options:{A:"Chỉ là một kênh quảng bá hình ảnh tĩnh của doanh nghiệp.",B:"Hỗ trợ truyền thông toàn cầu, cộng tác và giúp nhà quản lý thu thập, chia sẻ thông tin.",C:"Thay thế hoàn toàn các hệ thống quản trị dữ liệu truyền thống.",D:"Giảm thiểu nhu cầu về năng lực phân tích của các chuyên gia nội bộ."}},
+            {id:15, level:"Nhận biết", text:"Xu hướng \"Business Cooperation\" thông qua Web (Xu hướng số 5) tạo điều kiện cho:", options:{A:"Việc độc quyền hóa dữ liệu và ngăn cản sự hợp tác giữa các doanh nghiệp.",B:"Việc triển khai các Extranet, DSS liên tổ chức và thuê ngoài (outsourcing) qua các ASP.",C:"Việc giảm bớt các tiêu chuẩn an ninh mạng để tăng tốc độ kết nối.",D:"Việc chuyển đổi tất cả các hệ thống hỗ trợ ra quyết định sang dạng thủ công."}},
+            {id:16, level:"Thông hiểu", text:"Sự chấp nhận ngày càng tăng của thiết bị cầm tay (Handheld computing) ảnh hưởng như thế nào đến DSS?", options:{A:"Làm hạn chế khả năng thu thập dữ liệu do màn hình thiết bị quá nhỏ.",B:"Mở rộng phạm vi của DSS toàn doanh nghiệp và hỗ trợ thu thập dữ liệu phân tán, di động.",C:"Làm giảm nhu cầu sử dụng các hệ thống hỗ trợ quyết định dựa trên dữ liệu.",D:"Khiến doanh nghiệp phải phụ thuộc hoàn toàn vào các mạng có dây truyền thống."}},
+            {id:17, level:"Thông hiểu", text:"Hệ thống lưu trữ dữ liệu lớn và máy tính đa xử lý (Xu hướng số 7) đã giúp giải quyết rào cản nào?", options:{A:"Rào cản về việc thiếu hụt dữ liệu đầu vào cho các mô hình phân tích.",B:"Loại bỏ các ràng buộc về lượng dữ liệu có thể lưu trữ và tốc độ xử lý các truy vấn phức tạp.",C:"Giúp doanh nghiệp không cần thực hiện việc sao lưu (backup) dữ liệu định kỳ.",D:"Làm cho quy trình phân tích dữ liệu trở nên đơn giản và không cần đến máy tính."}},
+            {id:18, level:"Thông hiểu", text:"Tác động của việc mở rộng băng thông mạng (Bandwidth expansion) đến việc ra quyết định là:", options:{A:"Chỉ hỗ trợ gửi các báo cáo văn bản nhanh hơn.",B:"Cho phép sử dụng video tương tác và hỗ trợ quyết định theo thời gian thực ở bất kỳ đâu.",C:"Làm tăng chi phí vận hành mạng vượt mức lợi ích mang lại.",D:"Hạn chế khả năng truy cập dữ liệu từ xa do lo ngại về bảo mật."}},
+            {id:19, level:"Nhận biết", text:"Tại sao nhà quản lý cần \"nghĩ khác biệt\" (think outside of the box) trong việc áp dụng công nghệ?", options:{A:"Để tuân thủ chặt chẽ hơn các quy tắc kinh doanh cũ đã được chứng minh là hiệu quả.",B:"Để nắm bắt các cơ hội xây dựng DSS sáng tạo nhằm giành lợi thế cạnh tranh vượt trội.",C:"Để giảm thiểu rủi ro khi đầu tư vào các công nghệ chưa phổ biến trên thị trường.",D:"Để tránh việc phải cập nhật các kiến thức CNTT mới."}},
+            {id:20, level:"Thông hiểu", text:"Sự phổ biến của Linux và Apache trong doanh nghiệp phản ánh xu hướng nào?", options:{A:"Xu hướng ưu tiên các phần mềm độc quyền có chi phí cao.",B:"Xu hướng dịch chuyển sang các nền tảng nguồn mở để tối ưu hóa máy chủ Web.",C:"Xu hướng loại bỏ hoàn toàn việc sử dụng máy chủ trong hệ thống DSS.",D:"Xu hướng chỉ sử dụng phần mềm do doanh nghiệp tự xây dựng từ đầu."}},
+            {id:21, level:"Nhận biết", text:"Trong bối cảnh DSS, mô hình 5 lực lượng cạnh tranh của Michael Porter được sử dụng chủ yếu như một khung lý thuyết để:", options:{A:"Xác định danh sách các nhà cung cấp CNTT rẻ nhất trên thị trường.",B:"Phân tích cách thức công nghệ thông tin có thể thay đổi cấu trúc ngành và vị thế cạnh tranh.",C:"Thay thế các mô hình tài chính truyền thống trong việc tính toán lợi nhuận.",D:"Chỉ ra rằng công nghệ thông tin không có tác động đến quyền lực của khách hàng."}},
+            {id:22, level:"Thông hiểu", text:"DSS có thể giúp doanh nghiệp giảm quyền lực thương lượng của người mua bằng cách nào?", options:{A:"Ngăn cản khách hàng tiếp cận với thông tin về giá của đối thủ.",B:"Tạo ra sự khác biệt hóa sản phẩm và dịch vụ thông qua các tính năng hỗ trợ quyết định cho khách hàng.",C:"Tăng giá bán sản phẩm một cách ngẫu nhiên để thử nghiệm phản ứng thị trường.",D:"Cung cấp ít lựa chọn sản phẩm hơn để khách hàng dễ dàng quyết định."}},
+            {id:23, level:"Thông hiểu", text:"Cách thức DSS tác động làm giảm quyền lực của nhà cung cấp là:", options:{A:"Chỉ thiết lập mối quan hệ duy nhất với một nhà cung cấp để dễ quản lý.",B:"Hỗ trợ tìm kiếm các nguồn cung thay thế và tối ưu hóa quản lý chuỗi cung ứng.",C:"Tự động chấp nhận mọi mức giá mà nhà cung cấp đưa ra để duy trì quan hệ.",D:"Hạn chế chia sẻ dữ liệu tồn kho với nhà cung cấp."}},
+            {id:24, level:"Thông hiểu", text:"DSS đóng vai trò gì trong việc tạo rào cản gia nhập đối với các đối thủ tiềm năng?", options:{A:"Bằng cách công bố rộng rãi các quy trình kinh doanh nội bộ.",B:"Bằng cách xây dựng các hệ thống độc quyền phức tạp và có giá trị cao mà đối thủ khó sao chép trong ngắn hạn.",C:"Bằng cách giảm mức độ đầu tư vào CNTT để tiết kiệm chi phí.",D:"Bằng cách tập trung vào các dịch vụ đơn giản mà ai cũng có thể thực hiện."}},
+            {id:25, level:"Thông hiểu", text:"Chiến lược dẫn đầu về chi phí (Cost advantage) được hỗ trợ bởi DSS thông qua việc:", options:{A:"Tăng số lượng nhân viên hành chính để kiểm soát dữ liệu tốt hơn.",B:"Cải thiện hiệu suất cá nhân, giảm nhu cầu nhân sự và đẩy nhanh tiến độ giải quyết vấn đề.",C:"Đầu tư vào các hệ thống máy tính đắt tiền nhất để gây ấn tượng với đối thủ.",D:"Bỏ qua các yếu tố về hiệu quả hoạt động để tập trung vào giá bán."}},
+            {id:26, level:"Thông hiểu", text:"Một doanh nghiệp sử dụng DSS để phân tích sâu các phân khúc khách hàng nhằm mục đích:", options:{A:"Chia sẻ dữ liệu khách hàng cho các đối thủ cạnh tranh.",B:"Tập trung đáp ứng tốt nhất nhu cầu của một phân khúc cụ thể và giành lợi thế ngách.",C:"Làm giảm mức độ trung thành của khách hàng đối với thương hiệu.",D:"Hạn chế việc cung cấp các dịch vụ cá nhân hóa."}},
+            {id:27, level:"Thông hiểu", text:"Hệ thống thông tin liên tổ chức (Inter-organizational systems) ảnh hưởng đến cạnh tranh như thế nào?", options:{A:"Làm tăng chi phí giao dịch giữa các doanh nghiệp.",B:"Thay đổi mối quan hệ mặc cả giữa công ty với nhà cung cấp, kênh phân phối và người mua.",C:"Chỉ có tác động trong nội bộ doanh nghiệp mà không ảnh hưởng đến bên ngoài.",D:"Ngăn cản sự phát triển của chuỗi cung ứng hiện đại."}},
+            {id:28, level:"Thông hiểu", text:"Khi một doanh nghiệp cung cấp DSS trực tiếp cho khách hàng (ví dụ: công cụ tự thiết kế sản phẩm), doanh nghiệp đó đang thực hiện chiến lược:", options:{A:"Dẫn đầu về chi phí (Cost leadership).",B:"Khác biệt hóa sản phẩm/dịch vụ (Differentiation).",C:"Rút lui khỏi thị trường (Market exit).",D:"Tự động hóa hoàn toàn quy trình sản xuất (Automation)."}},
+            {id:29, level:"Thông hiểu", text:"Rủi ro lớn nhất khi các đối thủ cạnh tranh bắt chước một DSS sáng tạo là gì?", options:{A:"Doanh nghiệp ban đầu sẽ phải trả thêm thuế công nghệ.",B:"Lợi thế khác biệt bị triệt tiêu và chi phí vận hành ngành tăng lên cho tất cả các bên.",C:"Đối thủ sẽ ngay lập tức mua lại doanh nghiệp ban đầu.",D:"Khách hàng sẽ không còn quan tâm đến việc sử dụng công nghệ nữa."}},
+            {id:30, level:"Thông hiểu", text:"DSS giúp giảm chi phí của các hành động đối đầu (rivalry actions) giữa các đối thủ hiện tại bằng cách:", options:{A:"Kích động các cuộc chiến giá cả liên tục.",B:"Giúp nhà quản lý phân tích tình huống tốt hơn để tránh các phản ứng cạnh tranh không cần thiết.",C:"Tăng cường tung ra các chương trình khuyến mãi gây hấn.",D:"Giảm mức độ hiểu biết về thị trường của doanh nghiệp."}},
+            {id:31, level:"Nhận biết", text:"Ma trận tác động chiến lược của McFarlan phân loại các doanh nghiệp dựa trên:", options:{A:"Ngân sách CNTT hàng năm và số lượng nhân viên phòng máy tính.",B:"Tầm quan trọng chiến lược của các hệ thống hiện tại và tác động chiến lược của các ứng dụng IT mới.",C:"Tốc độ tăng trưởng doanh thu và số lượng đối thủ cạnh tranh trong ngành.",D:"Mức độ sử dụng phần mềm nguồn mở so với phần mềm độc quyền."}},
+            {id:32, level:"Nhận biết", text:"Các doanh nghiệp thuộc ô \"Factory\" (Nhà máy) có đặc điểm nào sau đây?", options:{A:"Hệ thống IT hiện tại cực kỳ quan trọng cho vận hành hàng ngày, nhưng các ứng dụng mới ít có tác động chiến lược.",B:"IT hoàn toàn không đóng vai trò gì trong hoạt động của doanh nghiệp.",C:"Mọi sự sống còn của doanh nghiệp đều phụ thuộc vào việc triển khai các DSS mới mỗi ngày.",D:"Doanh nghiệp không có hệ thống IT hiện tại và đang tìm mua hệ thống đầu tiên."}},
+            {id:33, level:"Nhận biết", text:"Tại sao các doanh nghiệp như Amazon.com được xếp vào ô \"Strategic\" (Chiến lược)?", options:{A:"Vì họ chỉ sử dụng IT để quản lý các công việc hành chính như bảng lương.",B:"Vì các hệ thống IT là yếu tố sống còn cho cả hoạt động hiện tại và thành công cạnh tranh tương lai.",C:"Vì họ có khả năng vận hành bình thường ngay cả khi toàn bộ hệ thống mạng bị sập.",D:"Vì họ là những doanh nghiệp mới thành lập và chưa có kinh nghiệm về công nghệ."}},
+            {id:34, level:"Nhận biết", text:"Một doanh nghiệp nằm trong ô \"Support\" (Hỗ trợ) thường có đặc điểm:", options:{A:"IT chỉ phục vụ các tác vụ như kế toán, lương và doanh nghiệp không phụ thuộc vào công nghệ để cạnh tranh.",B:"Bất kỳ sự cố IT nào cũng khiến doanh nghiệp phải đóng cửa ngay lập tức.",C:"Đang đầu tư mạnh mẽ vào DSS sáng tạo để thay đổi toàn bộ cấu trúc ngành.",D:"Là những đơn vị dẫn đầu về công nghệ trong phân khúc thị trường của mình."}},
+            {id:35, level:"Thông hiểu", text:"Đối với các doanh nghiệp thuộc ô \"Support\", việc phát triển các DSS sáng tạo thường dẫn đến kết quả:", options:{A:"Chắc chắn đạt được lợi thế cạnh tranh bền vững trong 10 năm.",B:"Ít có khả năng mang lại lợi thế cạnh tranh đáng kể.",C:"Giúp doanh nghiệp ngay lập tức chuyển sang ô \"Strategic\".",D:"Làm tăng sự hài lòng của khách hàng lên mức tuyệt đối."}},
+            {id:36, level:"Nhận biết", text:"Các doanh nghiệp \"laggards\" (tụt hậu về công nghệ) đang cố gắng phục hồi thông qua các hệ thống TPS mới thường nằm ở ô nào?", options:{A:"Factory.",B:"Strategic.",C:"Support.",D:"Turnaround."}},
+            {id:37, level:"Nhận biết", text:"Đặc điểm nhận diện chính của ô \"Turnaround\" (Chuyển đổi) là:", options:{A:"Doanh nghiệp đã quá thành công với các hệ thống IT cũ và không cần thay đổi.",B:"Sự chú ý hiện tại tập trung vào việc triển khai các hệ thống xử lý giao dịch (TPS) mới để sống còn.",C:"IT hiện tại có tác động chiến lược rất cao nhưng không cần ứng dụng mới.",D:"Doanh nghiệp chỉ sử dụng các công nghệ đã lỗi thời từ hàng thập kỷ trước."}},
+            {id:38, level:"Thông hiểu", text:"Vị thế nào trong ma trận là lý tưởng nhất để giành lợi thế cạnh tranh từ việc xây dựng các DSS mới?", options:{A:"Factory - vì họ đã có nền tảng IT ổn định.",B:"Support - vì họ có nhiều dư địa để cải thiện.",C:"Strategic - vì IT đã là một phần cốt lõi trong chiến lược của họ.",D:"Turnaround - vì họ đang trong quá trình thay đổi mạnh mẽ nhất."}},
+            {id:39, level:"Thông hiểu", text:"Trong ô \"Factory\", việc phát triển các ứng dụng hỗ trợ quyết định như Kho dữ liệu hay OLAP được đánh giá là:", options:{A:"Ưu tiên hàng đầu và có tính sống còn.",B:"Có tiềm năng hữu ích nhưng không phải là ưu tiên và không cơ bản để cạnh tranh.",C:"Hoàn toàn không mang lại lợi ích gì cho doanh nghiệp.",D:"Chỉ dành cho các doanh nghiệp có quy mô cực nhỏ."}},
+            {id:40, level:"Nhận biết", text:"Mục đích chính của nhà quản lý khi sử dụng Ma trận tác động chiến lược là:", options:{A:"Để sa thải bớt nhân viên IT không hiệu quả.",B:"Phân tích vị thế hiện tại của hệ thống thông tin và định hướng ưu tiên đầu tư IT.",C:"Để tính toán chính xác chi phí bảo trì cho các máy chủ cũ.",D:"Để thay thế các kế hoạch kinh doanh bằng sơ đồ công nghệ."}},
+            {id:41, level:"Vận dụng", text:"Tại Frito-Lay, việc trang bị máy tính cầm tay cho 10.000 nhân viên bán hàng vào cuối thập niên 1980 nhằm đạt được mục đích chiến lược nào?", options:{A:"Để giám sát vị trí di chuyển của nhân viên thông qua GPS.",B:"Hỗ trợ ra quyết định phi tập trung về khuyến mãi và sản phẩm tại chỗ trong khi vẫn giữ kiểm soát tập trung.",C:"Thay thế toàn bộ đội ngũ quản lý tại trụ sở chính bằng phần mềm tự động.",D:"Giảm thời gian làm việc của nhân viên bán hàng xuống một nửa."}},
+            {id:42, level:"Vận dụng", text:"Mô hình Tối ưu hóa Kinh tế (EOM) của L.L. Bean được triển khai năm 1989 nhằm mục đích:", options:{A:"Dự báo xu hướng thời trang cho mùa tiếp theo.",B:"Tối ưu hóa việc phân bổ nguồn lực (nhân viên, đường dây điện thoại) tại trung tâm cuộc gọi dựa trên lợi nhuận.",C:"Tự động hóa quy trình nướng bánh quy tại các cửa hàng bán lẻ.",D:"Giảm số lượng khách hàng gọi đến để tiết kiệm chi phí viễn thông."}},
+            {id:43, level:"Vận dụng", text:"Kết quả tài chính thực tế mà L.L. Bean đạt được từ hệ thống EOM trong năm 1989 là:", options:{A:"Tiết kiệm được 40.000 USD chi phí đầu tư ban đầu.",B:"Đạt được mức tăng lợi nhuận ước tính từ 9,2 triệu đến 10 triệu USD.",C:"Làm giảm doanh số bán hàng do khách hàng phải chờ đợi lâu hơn.",D:"Không có thay đổi đáng kể về mặt lợi nhuận nhưng cải thiện được hình ảnh."}},
+            {id:44, level:"Nhận biết", text:"Hệ thống MIDS tại Lockheed-Georgia (1975) là ví dụ điển hình về sự tiến hóa của:", options:{A:"Hệ thống xử lý đơn hàng thủ công sang máy tính.",B:"Hệ thống thông tin dành riêng cho giám đốc điều hành (EIS).",C:"Hệ thống quản lý kho bãi tự động bằng robot.",D:"Hệ thống thiết kế máy bay bằng trợ giúp máy tính (CAD)."}},
+            {id:45, level:"Vận dụng", text:"Khi Lockheed-Georgia nâng cấp lên hệ thống MIDS II vào năm 1992, họ đã có yêu cầu đặc biệt nào đối với nhà cung cấp Comshare?", options:{A:"Hệ thống chỉ được phép hoạt động thông qua màn hình cảm ứng để đảm bảo tính hiện đại.",B:"Cho phép vận hành qua bàn phím bên cạnh chuột và màn hình cảm ứng, đồng thời có tính năng theo dõi mức độ sử dụng.",C:"Yêu cầu phần mềm phải chạy trên các máy tính độc lập không kết nối mạng.",D:"Phần mềm phải là bản độc quyền duy nhất cho Lockheed và không được bán cho bất kỳ ai khác."}},
+            {id:46, level:"Vận dụng", text:"Triết lý quản trị nào được Mrs. Fields Cookies cụ thể hóa thông qua hệ thống DSS tại các cửa hàng?", options:{A:"Trao quyền hoàn toàn cho cửa hàng trưởng tự quyết định mọi tiêu chuẩn chất lượng.",B:"Đảm bảo sự đồng nhất trong quản lý và hỗ trợ ra quyết định theo phong cách của Debbi Field trên toàn hệ thống.",C:"Cắt giảm tối đa chi phí bằng cách sử dụng các nguyên liệu rẻ tiền nhất.",D:"Loại bỏ vai trò của con người trong quy trình nướng bánh."}},
+            {id:47, level:"Vận dụng", text:"Hệ thống DSS tại cửa hàng của Mrs. Fields giúp giải quyết các tác vụ cụ thể nào hàng ngày?", options:{A:"Lập lịch nướng bao nhiêu bánh mỗi loại, khi nào nướng và dự báo doanh số từng giờ.",B:"Tự động tuyển dụng nhân viên mới qua mạng Internet.",C:"Thay đổi công thức bánh quy dựa trên sở thích cá nhân của nhân viên bán hàng.",D:"Chỉ dùng để ghi chép giờ ra vào của nhân sự."}},
+            {id:48, level:"Nhận biết", text:"Vào đầu thập niên 1990, Wal-Mart đã tạo ra lợi thế cạnh tranh khác biệt bằng cách sử dụng công nghệ nào?", options:{A:"Các báo cáo giấy được gửi qua đường bưu điện hàng tuần.",B:"Kho dữ liệu lớn (large data warehouses) và phần mềm khai phá dữ liệu (data mining).",C:"Hệ thống bán hàng qua điện thoại truyền thống.",D:"Chỉ tập trung vào việc giảm giá bằng cách giảm chất lượng dịch vụ."}},
+            {id:49, level:"Thông hiểu", text:"Điểm chung nổi bật nhất trong chiến lược DSS của Frito-Lay và Mrs. Fields là:", options:{A:"Cả hai đều thất bại trong việc ứng dụng công nghệ cầm tay.",B:"Sử dụng IT để duy trì quyền kiểm soát tập trung đồng thời cho phép ra quyết định phi tập trung (decentralized).",C:"Cắt giảm toàn bộ bộ phận CNTT tại trụ sở chính để tiết kiệm chi phí.",D:"Chỉ sử dụng IT cho mục đích in hóa đơn bán hàng."}},
+            {id:50, level:"Vận dụng", text:"Bài học quan trọng từ trường hợp Lockheed-Georgia về việc mua phần mềm thương mại (MIDS II) thay vì tự xây dựng là:", options:{A:"Việc tự xây dựng luôn tốt hơn vì nó đảm bảo tính độc quyền tuyệt đối.",B:"Mua sản phẩm thương mại (như Commander EIS) giúp giảm chi phí bảo trì, tăng tính linh hoạt và dễ dàng cập nhật.",C:"Doanh nghiệp nên mua bất kỳ phần mềm nào rẻ nhất trên thị trường.",D:"Phần mềm thương mại không bao giờ đáp ứng được nhu cầu của các giám đốc điều hành."}}
+        ];
+
+        let userAnswers = {};
+        let isTeacherMode = false;
+
+        function renderQuestions() {
+            const container = document.getElementById("questionsContainer");
+            container.innerHTML = "";
+
+            questions.forEach(q => {
+                const card = document.createElement("div");
+                card.className = "question-card bg-white rounded-3xl shadow-xl p-8";
+                card.innerHTML = `
+                    <div class="flex gap-6">
+                        <div class="w-12 h-12 flex-shrink-0 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center text-2xl font-bold">${q.id}</div>
+                        <div class="flex-1">
+                            <span class="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-blue-100 text-blue-700">${q.level}</span>
+                            <p class="mt-5 text-[17px] leading-relaxed text-gray-800">${q.text}</p>
+                            
+                            <div class="mt-7 space-y-4">
+                                ${Object.keys(q.options).map(key => `
+                                    <label onclick="selectOption(${q.id}, '${key}')" class="option-label flex items-center gap-4 p-5 rounded-2xl border border-gray-200 cursor-pointer hover:border-blue-400">
+                                        <input type="radio" name="q${q.id}" class="w-5 h-5 accent-blue-600">
+                                        <span class="font-medium">${key}. ${q.options[key]}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+
+                            <div id="feedback-${q.id}" class="answer-reveal mt-6 p-6 rounded-2xl bg-emerald-50 border border-emerald-300">
+                                <strong class="text-emerald-700 text-lg">Đáp án đúng: ${answerKey[q.id]}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(qid, option) {
+            userAnswers[qid] = option;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            const percent = Math.round((answered / 50) * 100);
+            document.getElementById("progressBar").style.width = percent + "%";
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            Object.keys(answerKey).forEach(id => {
+                if (userAnswers[id] === answerKey[id]) score++;
+            });
+            alert(`🎯 Kết quả: ${score}/50 câu đúng!\n\nChúc bạn ôn tập tốt Chương 2!`);
+        }
+
+        function requestPassword() {
+            document.getElementById("passwordModal").classList.remove("hidden");
+            document.getElementById("passwordInput").focus();
+        }
+
+        function closeModal() {
+            document.getElementById("passwordModal").classList.add("hidden");
+            document.getElementById("errorMsg").classList.add("hidden");
+        }
+
+        function checkPassword() {
+            const input = document.getElementById("passwordInput").value.trim();
+            if (input === TEACHER_PASSWORD) {
+                isTeacherMode = true;
+                document.querySelectorAll('.answer-reveal').forEach(el => el.style.display = "block");
+                closeModal();
+                alert("✅ Xác thực thành công!\nĐáp án đã được hiển thị cho Giáo viên.");
+            } else {
+                document.getElementById("errorMsg").classList.remove("hidden");
+                setTimeout(() => document.getElementById("errorMsg").classList.add("hidden"), 2500);
+            }
+        }
+
+        function toggleMode() {
+            alert("Hiện đang ở chế độ Sinh viên.\nGiáo viên vui lòng nhấn nút \"Xem Đáp Án (GV)\" và nhập mật khẩu.");
+        }
+
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>

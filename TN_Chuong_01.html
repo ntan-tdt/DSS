@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm DSS - Chương 1: Hệ Thống Hỗ Trợ Ra Quyết Định</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .question-card { transition: all 0.3s ease; }
+        .option-label { transition: all 0.2s ease; }
+        .option-label:hover { background-color: #f3f4f6; }
+        .answer-reveal { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-blue-700">📋 Trắc Nghiệm Ôn Tập</h1>
+                    <p class="text-2xl text-gray-700 mt-2">Chương 1: Hệ Thống Hỗ Trợ Ra Quyết Định (DSS)</p>
+                    <p class="text-gray-500">50 câu hỏi • Có chế độ Giáo viên</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="toggleMode()" class="px-6 py-3 bg-blue-600 text-white rounded-2xl flex items-center gap-2 hover:bg-blue-700">
+                        <i class="fas fa-user-graduate"></i>
+                        <span id="modeText">Chế độ Sinh viên</span>
+                    </button>
+                    <button onclick="requestPassword()" class="px-6 py-3 bg-emerald-600 text-white rounded-2xl flex items-center gap-2 hover:bg-emerald-700">
+                        <i class="fas fa-key"></i>
+                        <span>Xem Đáp Án (GV)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between mb-6 bg-white p-5 rounded-2xl shadow">
+            <div class="flex items-center gap-4">
+                <span class="font-medium">Tiến độ:</span>
+                <div class="w-80 h-3 bg-gray-200 rounded-full">
+                    <div id="progressBar" class="h-full bg-blue-600 rounded-full w-0 transition-all"></div>
+                </div>
+            </div>
+            <button onclick="submitQuiz()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-medium">
+                Nộp bài & Xem kết quả
+            </button>
+        </div>
+
+        <div id="questionsContainer" class="space-y-10"></div>
+
+        <!-- Password Modal -->
+        <div id="passwordModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div class="bg-white rounded-3xl p-8 w-full max-w-md">
+                <h3 class="text-2xl font-bold mb-6">🔑 Xác thực Giáo viên</h3>
+                <input type="password" id="passwordInput" placeholder="Nhập mật khẩu" 
+                       class="w-full px-5 py-4 border rounded-2xl text-lg focus:outline-none focus:border-emerald-500 mb-4">
+                <div class="flex gap-4">
+                    <button onclick="checkPassword()" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-medium">Xác nhận</button>
+                    <button onclick="closeModal()" class="flex-1 py-4 bg-gray-300 rounded-2xl font-medium">Hủy</button>
+                </div>
+                <p id="errorMsg" class="text-red-500 mt-4 hidden text-center">Mật khẩu không đúng!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TEACHER_PASSWORD = "giaoVien123";   // ← Bạn có thể đổi mật khẩu ở đây
+
+        const answerKey = {
+            1:"A",2:"B",3:"C",4:"B",5:"B",6:"D",7:"C",8:"B",9:"B",10:"B",
+            11:"C",12:"B",13:"B",14:"A",15:"B",16:"C",17:"B",18:"B",19:"B",20:"A",
+            21:"C",22:"B",23:"B",24:"B",25:"B",26:"B",27:"B",28:"C",29:"B",30:"B",
+            31:"B",32:"A",33:"C",34:"B",35:"B",36:"B",37:"B",38:"B",39:"B",40:"C",
+            41:"B",42:"B",43:"C",44:"B",45:"B",46:"B",47:"B",48:"B",49:"B",50:"B"
+        };
+
+        const questions = [
+            {id:1, level:"Nhận biết", text:"Vào giữa những năm 1960, sự phát triển của hệ thống máy tính nào sau đây đã làm cho việc triển khai Hệ thống thông tin quản lý (MIS) trong các công ty lớn trở nên thực tế và hiệu quả về chi phí hơn?", options:{A:"IBM System 360",B:"Apple Macintosh",C:"ENIAC",D:"Hệ thống Client/Server"}},
+            {id:2, level:"Nhận biết", text:"Theo Peter Keen và Charles Stabell, khái niệm hỗ trợ ra quyết định (Decision Support) có nguồn gốc từ các nghiên cứu lý thuyết về ra quyết định tổ chức tại cơ sở nào?", options:{A:"Massachusetts Institute of Technology (MIT)",B:"Carnegie Institute of Technology",C:"Harvard Business School",D:"Stanford University"}},
+            {id:3, level:"Nhận biết", text:"Tác giả Michael S. Scott Morton đã xuất bản cuốn sách tiên phong nào vào năm 1971 để định nghĩa về việc hỗ trợ ra quyết định dựa trên máy tính?", options:{A:"Building Effective Decision Support Systems",B:"Decision Support Systems: Current Practice and Continuing Challenge",C:"Management Decision Systems: Computer-Based Support for Decision Making",D:"Management Information Systems: Conceptual Foundations"}},
+            {id:4, level:"Nhận biết", text:"Trong thí nghiệm của mình vào cuối những năm 1960, Michael S. Scott Morton đã nghiên cứu cách các mô hình phân tích giúp các nhà quản lý điều phối kế hoạch sản xuất cho loại thiết bị nào?", options:{A:"Thiết bị viễn thông",B:"Thiết bị giặt ủi (Laundry equipment)",C:"Phụ tùng ô tô",D:"Máy tính mainframe"}},
+            {id:5, level:"Nhận biết", text:"T.P. Gerrity, Jr. (1971) đã tập trung nghiên cứu thiết kế Hệ thống hỗ trợ ra quyết định con người - máy tính trong lĩnh vực ứng dụng cụ thể nào?", options:{A:"Quản lý chuỗi cung ứng",B:"Quản lý danh mục đầu tư (Portfolio Management)",C:"Lập kế hoạch tài chính công ty",D:"Quản lý nhân sự"}},
+            {id:6, level:"Thông hiểu", text:"J.D.C Little (1970) đã xác định 4 tiêu chí để thiết kế các mô hình hỗ trợ ra quyết định quản lý. Tiêu chí nào sau đây nhấn mạnh việc mô hình phải bao gồm các chi tiết liên quan một cách toàn diện?", options:{A:"Tính mạnh mẽ (Robustness)",B:"Sự đơn giản (Simplicity)",C:"Tính dễ kiểm soát (Ease of control)",D:"Tính đầy đủ (Completeness)"}},
+            {id:7, level:"Thông hiểu", text:"Trong khung lý thuyết của Bonczek, Holsapple và Whinston (1981), thành phần nào được gọi là \"phần mềm động cơ\" chịu trách nhiệm nhận diện và giải quyết vấn đề?", options:{A:"Hệ thống ngôn ngữ (Language system - LS)",B:"Hệ thống trình diễn (Presentation system - PS)",C:"Hệ thống xử lý vấn đề (Problem-processing system - PPS)",D:"Hệ thống tri thức (Knowledge system - KS)"}},
+            {id:8, level:"Nhận biết", text:"Vào những năm 1990, nhóm công nghệ nào sau đây đã bắt đầu mở rộng khả năng của DSS thông qua việc phân tích dữ liệu lịch sử quy mô lớn?", options:{A:"TPS, MIS và ERP",B:"Business Intelligence, Data Warehousing và OLAP",C:"World Wide Web và Trình duyệt",D:"Bảng tính và Hệ thống chuyên gia"}},
+            {id:9, level:"Thông hiểu", text:"Dựa trên bảng tóm tắt lịch sử (Table 1.1), các công nghệ chủ đạo của giai đoạn những năm 1980 bao gồm những thành phần nào?", options:{A:"MIS và báo cáo cấu trúc",B:"GDSS, EIS và Hệ chuyên gia (Expert Systems)",C:"Khai phá dữ liệu và Cổng thông tin (Portals)",D:"Hệ thống tương tác và lý thuyết nghiên cứu"}},
+            {id:10, level:"Thông hiểu", text:"Sự kiện công nghệ nào diễn ra vào năm 1995 đã đánh dấu một bước ngoặt lớn, ảnh hưởng mạnh mẽ đến cả giới học thuật và thực hành trong lĩnh vực hỗ trợ ra quyết định?", options:{A:"Sự xuất hiện của máy tính cá nhân (PC)",B:"Sự ra đời của hệ thống ERP và World Wide Web",C:"Việc xuất bản khung lý thuyết của Sprague và Carlson",D:"Sự phát triển của ngôn ngữ lập trình Java"}},
+            {id:11, level:"Nhận biết", text:"Theo Sprague và Carlson (1982), DSS là một lớp hệ thống thông tin tương tác nhằm hỗ trợ hoạt động ra quyết định của những đối tượng nào?", options:{A:"Chỉ các nhà quản lý cấp cao nhất",B:"Nhân viên vận hành và giao dịch",C:"Các nhà quản lý và những người lao động tri thức (knowledge workers)",D:"Chuyên gia lập trình hệ thống"}},
+            {id:12, level:"Thông hiểu", text:"Tính chất \"ancillary\" hoặc \"auxiliary\" trong định nghĩa của Sprague và Carlson về DSS nhấn mạnh điều gì?", options:{A:"DSS là hệ thống bắt buộc phải có để vận hành doanh nghiệp",B:"DSS đóng vai trò phụ trợ và không nhằm thay thế người ra quyết định có kỹ năng",C:"DSS có khả năng tự động đưa ra quyết định cuối cùng",D:"DSS chỉ phục vụ mục đích lưu trữ dữ liệu phụ"}},
+            {id:13, level:"Nhận biết", text:"Giả định cơ bản đầu tiên khi xem xét xây dựng một DSS là gì?", options:{A:"Chi phí công nghệ sẽ giảm dần theo thời gian",B:"Thông tin tốt có khả năng cải thiện việc ra quyết định",C:"Mọi quy trình kinh doanh đều cần được máy tính hóa",D:"Người dùng luôn có kỹ năng công nghệ cao"}},
+            {id:14, level:"Nhận biết", text:"Giả định cơ bản thứ hai để xây dựng DSS liên quan đến nhu cầu của nhà quản lý là:", options:{A:"Các nhà quản lý cần và muốn sự hỗ trợ từ máy tính",B:"Các nhà quản lý muốn tự động hóa toàn bộ công việc",C:"Các nhà quản lý cần các báo cáo định kỳ bằng văn bản",D:"Các nhà quản lý muốn giảm bớt số lượng nhân viên hỗ trợ"}},
+            {id:15, level:"Thông hiểu", text:"Theo Steven Alter (1980), đặc điểm nào sau đây là một trong ba đặc điểm chính để nhận diện một DSS?", options:{A:"Được thiết kế để tự động hóa quy trình nghiệp vụ",B:"Có khả năng đáp ứng nhanh chóng các nhu cầu thay đổi của người ra quyết định",C:"Chỉ tập trung vào dữ liệu kế toán nội bộ",D:"Thay thế sự phán đoán của con người bằng thuật toán cố định"}},
+            {id:16, level:"Thông hiểu", text:"Sprague và Carlson định nghĩa DSS là các hệ thống giúp giải quyết loại vấn đề nào?", options:{A:"Các vấn đề có cấu trúc hoàn toàn (Structured)",B:"Các vấn đề giao dịch hàng ngày có tính lặp lại",C:"Các vấn đề phi cấu trúc, bán cấu trúc hoặc cấu trúc kém (ill-structured)",D:"Các vấn đề tính toán hiệu suất máy móc đơn thuần"}},
+            {id:17, level:"Thông hiểu", text:"Đặc điểm cốt lõi của \"hệ thống hỗ trợ\" (Support) trong DSS theo quan điểm của Alter là gì?", options:{A:"Tăng cường hiệu quả xử lý dữ liệu giao dịch",B:"Hỗ trợ thay vì tự động hóa việc ra quyết định",C:"Cung cấp một giải pháp duy nhất không thể thay đổi",D:"Giảm thiểu sự tương tác giữa người và máy tính"}},
+            {id:18, level:"Vận dụng", text:"Hệ thống MIDS của Lockheed-Georgia cung cấp cho các giám đốc điều hành thông tin súc tích, kịp thời và có liên quan được xác minh trước khi hiển thị. Tại sao hệ thống này được coi là một DSS chiến lược thay vì một hệ thống báo cáo MIS thông thường?", options:{A:"Vì nó tự động hóa việc lập lịch trình cho các chuyến bay của cargo aircraft",B:"Vì nó cho phép các nhà quản lý xác định các khu vực cần chú ý và hỗ trợ việc đưa ra các quyết định dựa trên thông tin cập nhật theo thời gian thực",C:"Vì nó thay thế hoàn toàn nhu cầu báo cáo bằng văn bản của nhân viên hỗ trợ",D:"Vì nó chỉ được sử dụng bởi Robert B. Ormsby, chủ tịch của công ty"}},
+            {id:19, level:"Nhận biết", text:"Mục đích chính của Hệ thống xử lý giao dịch (TPS) là gì?", options:{A:"Hỗ trợ các quyết định chiến lược dài hạn",B:"Tự động hóa các giao dịch nghiệp vụ và tăng hiệu quả xử lý dữ liệu vận hành",C:"Cung cấp các mô hình mô phỏng kịch bản tương lai",D:"Tạo ra các báo cáo phi cấu trúc theo yêu cầu của nhà quản lý"}},
+            {id:20, level:"Thông hiểu", text:"Sự khác biệt chính về triết lý giữa TPS và DSS là:", options:{A:"TPS tập trung vào hiệu quả xử lý dữ liệu, DSS tập trung vào hiệu quả ra quyết định",B:"TPS dành cho quản lý cấp cao, DSS dành cho nhân viên văn phòng",C:"TPS linh hoạt hơn DSS về khả năng thay đổi cấu trúc dữ liệu",D:"TPS nhấn mạnh vào tính cá nhân hóa, DSS nhấn mạnh vào tính đồng nhất"}},
+            {id:21, level:"Nhận biết", text:"Đối tượng người dùng chính của DSS thường là:", options:{A:"Nhân viên cấp dưới và nhân viên nhập liệu",B:"Khách hàng vãng lai truy cập website công ty",C:"Các nhà quản lý tuyến trên và nhân viên hỗ trợ chuyên môn",D:"Lập trình viên phụ trách bảo trì hệ thống"}},
+            {id:22, level:"Thông hiểu", text:"Về đặc điểm dữ liệu, trong khi TPS nhấn mạnh vào tính nhất quán và toàn vẹn dữ liệu (Data integrity), DSS lại ưu tiên:", options:{A:"Tốc độ nhập dữ liệu tối đa",B:"Tính linh hoạt và khả năng truy xuất thông tin liên quan đến quyết định",C:"Việc lưu trữ dữ liệu ngắn hạn và tạm thời",D:"Chỉ sử dụng dữ liệu phi cấu trúc từ bên ngoài"}},
+            {id:23, level:"Thông hiểu", text:"Hệ thống hoạch định nguồn lực doanh nghiệp (ERP) có vai trò như thế nào đối với DSS?", options:{A:"ERP bản chất là một DSS hướng mô hình",B:"ERP là một TPS tích hợp cung cấp nguồn dữ liệu quan trọng cho các DSS hướng dữ liệu",C:"ERP thay thế hoàn toàn nhu cầu về DSS trong tổ chức",D:"ERP chỉ là một công cụ hỗ trợ giao tiếp nhóm"}},
+            {id:24, level:"Thông hiểu", text:"So với MIS truyền thống (theo nghĩa hẹp), DSS có đặc điểm nổi bật nào?", options:{A:"Cung cấp báo cáo định kỳ, có cấu trúc và dựa trên giấy tờ",B:"Là hệ thống tương tác, đáp ứng các yêu cầu thông tin không lập kế hoạch trước (unplanned)",C:"Không cho phép người dùng kiểm soát các tham số phân tích",D:"Chỉ tập trung vào dữ liệu tài chính quá khứ"}},
+            {id:25, level:"Vận dụng", text:"L.L. Bean đã triển khai mô hình Tối ưu hóa Kinh tế (EOM) để quản lý nguồn lực tiếp thị qua điện thoại. Hệ thống này giúp xác định số lượng nhân viên và đường dây điện thoại cần thiết để đạt hiệu quả kinh tế cao nhất. Đây là ví dụ về DSS giúp đạt được lợi thế cạnh tranh thông qua:", options:{A:"Tăng hiệu quả xử lý các giao dịch cuộc gọi đơn thuần",B:"Tối ưu hóa hiệu quả kinh tế bằng cách cân bằng giữa chi phí nguồn lực và doanh thu từ đơn hàng bị mất",C:"Tự động hóa hoàn toàn việc trả lời điện thoại của khách hàng",D:"Thay thế nhu cầu đào tạo nhân viên bán hàng"}},
+            {id:26, level:"Nhận biết", text:"Về nguồn dữ liệu, DSS khác TPS ở chỗ nó thường sử dụng:", options:{A:"Chỉ dữ liệu giao dịch hiện tại",B:"Dữ liệu lịch sử, dữ liệu nội bộ và dữ liệu bên ngoài",C:"Chỉ dữ liệu từ các hóa đơn bán hàng trong ngày",D:"Dữ liệu thô chưa qua xử lý của các bộ phận chức năng"}},
+            {id:27, level:"Thông hiểu", text:"Tại sao kiến thức về xây dựng TPS là không đủ để tạo ra một DSS hiệu quả?", options:{A:"Vì DSS sử dụng phần cứng máy tính hoàn toàn khác TPS",B:"Vì hai hệ thống khác biệt nhau về cả yêu cầu kỹ thuật lẫn triết lý thiết kế (hỗ trợ so với tự động hóa)",C:"Vì DSS không cần sử dụng cơ sở dữ liệu như TPS",D:"Vì TPS tốn ít chi phí phát triển hơn DSS"}},
+            {id:28, level:"Vận dụng", text:"Trong một ngân hàng, một hệ thống giúp nhân viên ghi nhận khách hàng gửi tiền vào tài khoản là loại hệ thống gì, và một hệ thống giúp quản lý phân tích xu hướng vay vốn để quyết định lãi suất ưu đãi là loại gì?", options:{A:"Cả hai đều là hệ thống DSS",B:"Cả hai đều là hệ thống TPS",C:"Gửi tiền là TPS, phân tích lãi suất là DSS",D:"Gửi tiền là DSS, phân tích lãi suất là TPS"}},
+            {id:29, level:"Nhận biết", text:"Loại DSS nào nhấn mạnh vào việc truy cập và thao tác các cơ sở dữ liệu lớn chứa dữ liệu có cấu trúc, bao gồm cả dữ liệu chuỗi thời gian của công ty?", options:{A:"Model-driven DSS",B:"Data-driven DSS",C:"Knowledge-driven DSS",D:"Communications-driven DSS"}},
+            {id:30, level:"Nhận biết", text:"Thành phần cốt lõi của Model-driven DSS thường bao gồm các loại mô hình nào?", options:{A:"Mô hình tìm kiếm văn bản và siêu liên kết",B:"Các mô hình tài chính, tối ưu hóa hoặc mô phỏng (representational)",C:"Các quy tắc kinh doanh (business rules) và cây quyết định",D:"Công cụ cộng tác video và bảng tin điện tử"}},
+            {id:31, level:"Thông hiểu", text:"Điểm khác biệt chính của Model-driven DSS so với các loại khác là gì?", options:{A:"Nó yêu cầu các kho dữ liệu (data warehouse) khổng lồ để vận hành",B:"Nó sử dụng các tham số do người dùng cung cấp để phân tích tình huống nhưng thường không thâm dụng dữ liệu (not data intensive)",C:"Nó chỉ dành cho việc tìm kiếm tài liệu phi cấu trúc",D:"Nó không cho phép thực hiện phân tích giả định \"What-if\""}},
+            {id:32, level:"Nhận biết", text:"Loại DSS nào sử dụng công nghệ lưu trữ và xử lý để giúp quản lý truy xuất và phân tích các tài liệu phi cấu trúc như trang web, hồ sơ doanh nghiệp và video?", options:{A:"Document-driven DSS",B:"Knowledge-driven DSS",C:"Model-driven DSS",D:"Data-driven DSS"}},
+            {id:33, level:"Thông hiểu", text:"Thuật ngữ \"Suggestion DSS\" (DSS gợi ý) thường được dùng để mô tả loại DSS nào trong khung phân loại mở rộng?", options:{A:"Data-driven DSS",B:"Model-driven DSS",C:"Knowledge-driven DSS",D:"Communications-driven DSS"}},
+            {id:34, level:"Nhận biết", text:"Communications-driven DSS (bao gồm cả GDSS) tập trung vào hỗ trợ hoạt động nào?", options:{A:"Khai phá các mẫu ẩn trong dữ liệu lớn (Data mining)",B:"Cộng tác, làm việc nhóm và hỗ trợ các quyết định chung của nhiều người",C:"Quản lý các quy tắc tính phí bảo hiểm",D:"Tối ưu hóa master production scheduling"}},
+            {id:35, level:"Thông hiểu", text:"Theo khung phân loại mở rộng, một hệ thống GDSS (Group Decision Support System) nên được hiểu là:", options:{A:"Một hệ thống gửi email đơn thuần",B:"Một hệ thống lai (hybrid) nhấn mạnh vào cả công nghệ giao tiếp và các mô hình quy trình quyết định",C:"Một dạng của Document-driven DSS tập trung vào văn bản",D:"Một hệ thống TPS cho phép nhiều người nhập liệu cùng lúc"}},
+            {id:36, level:"Vận dụng", text:"Hệ thống \"Merchandise Data Warehouse\" của ShopKo cho phép các cộng tác viên thực hiện các truy vấn ad hoc và lập báo cáo qua Web để hỗ trợ ra quyết định. Đây là ví dụ điển hình của loại DSS nào?", options:{A:"Model-driven DSS",B:"Data-driven DSS",C:"Knowledge-driven DSS",D:"Communications-driven DSS"}},
+            {id:37, level:"Nhận biết", text:"Một hệ thống DSS phục vụ cho khách hàng hoặc nhà cung cấp của công ty (nhằm thiết kế sản phẩm hoặc chọn sản phẩm) được phân loại là:", options:{A:"Intraorganizational DSS",B:"Interorganizational DSS",C:"Internal MIS",D:"Personal DSS"}},
+            {id:38, level:"Thông hiểu", text:"Trong một Data-driven DSS cấp độ cao, công nghệ nào cung cấp khả năng phân tích dữ liệu lịch sử mạnh mẽ nhất?", options:{A:"Hệ thống truy vấn đơn giản (Simple query tools)",B:"On-Line Analytical Processing (OLAP)",C:"Các mô hình tối ưu hóa toán học phức tạp",D:"Công cụ tìm kiếm từ khóa (Search engines)"}},
+            {id:39, level:"Vận dụng", text:"FedEx cung cấp khả năng Business Intelligence cho 700 người dùng cuối thông qua một \"trung tâm kho dữ liệu tích hợp\", truy cập qua trình duyệt Web để lập kế hoạch tài chính và hậu cần. Đây là ví dụ về:", options:{A:"Một Model-driven DSS hỗ trợ lập lịch trình máy bay",B:"Một Data-driven DSS quy mô toàn doanh nghiệp (Enterprise-wide)",C:"Một Knowledge-driven DSS hướng chuyên gia",D:"Một Communications-driven DSS hỗ trợ nhóm"}},
+            {id:40, level:"Nhận biết", text:"Thành phần \"Inference engine\" (động cơ suy diễn) là đặc trưng kỹ thuật cốt lõi của loại DSS nào?", options:{A:"Data-driven DSS",B:"Model-driven DSS",C:"Knowledge-driven DSS",D:"Document-driven DSS"}},
+            {id:41, level:"Vận dụng", text:"Một nhà quản lý tài chính đang cân nhắc giữa việc sử dụng một bảng tính Excel tự tạo để phân tích ngân sách và việc mua một phần mềm chuyên dụng \"Budgeting System\" từ nhà cung cấp. Sự khác biệt chính giữa hai lựa chọn này theo Table 1.2 là gì?", options:{A:"Bảng tính Excel là DSS chức năng cụ thể (function-specific), phần mềm mua ngoài là DSS đa năng",B:"Bảng tính Excel là công cụ đa năng (general purpose), phần mềm mua ngoài là DSS chức năng cụ thể (function-specific)",C:"Cả hai đều là DSS hướng dữ liệu (data-driven)",D:"Không có sự khác biệt về mục đích sử dụng giữa hai loại này"}},
+            {id:42, level:"Vận dụng", text:"Không quân Hoa Kỳ đã phát triển DSS \"Base Closure and Analysis\" để đánh giá tác động của các kịch bản đóng cửa căn cứ dựa trên 8 tiêu chí chính và 212 tiêu chí phụ. Hệ thống này thuộc loại nào?", options:{A:"Knowledge-driven DSS sử dụng các quy tắc AI",B:"Model-driven DSS sử dụng mô hình để đánh giá tác động tương đối của các kịch bản",C:"Document-driven DSS lưu trữ các hồ sơ về căn cứ quân sự",D:"TPS để quản lý việc di dời tài sản quân đội"}},
+            {id:43, level:"Vận dụng", text:"Một công ty bảo hiểm sử dụng hệ thống tự động tính toán tỷ lệ gia hạn bảo hiểm dựa trên việc xử lý logic các quy tắc rủi ro. Theo phân loại của Steven Alter (1977), hệ thống này thuộc loại:", options:{A:"Hệ thống phân tích dữ liệu (Data analysis systems)",B:"Mô hình kế toán (Accounting models)",C:"Mô hình gợi ý (Suggestion models)",D:"Mô hình tối ưu hóa (Optimization models)"}},
+            {id:44, level:"Nhận biết", text:"Theo góc nhìn của người dùng, thành phần nào của DSS là quan trọng nhất vì \"những gì họ thấy chính là hệ thống\"?", options:{A:"Cơ sở dữ liệu (Database)",B:"Giao diện người dùng (User Interface)",C:"Các mô hình (Models)",D:"Kiến trúc mạng (Architecture)"}},
+            {id:45, level:"Thông hiểu", text:"Trong một Knowledge-driven DSS, cơ sở dữ liệu được mở rộng để lưu trữ thành phần đặc biệt nào?", options:{A:"Các bảng biểu số liệu thô",B:"\"Tri thức\" dưới dạng các quy tắc (rules) hoặc mối quan hệ content",C:"Các tệp tin đa phương tiện",D:"Các chương trình điều khiển phần cứng"}},
+            {id:46, level:"Vận dụng", text:"Một nhà quản lý thường xuyên đi công tác cần truy cập hệ thống hỗ trợ ra quyết định từ xa qua Internet. Theo Figure 1.1 và Section 6.1, kiến trúc nào sau đây là phù hợp nhất để triển khai giao diện người dùng?", options:{A:"Kiến trúc máy khách dày (Thick-client architecture) yêu cầu cài đặt phần mềm phức tạp trên laptop",B:"Kiến trúc máy khách mỏng (Thin-client architecture) sử dụng trình duyệt Web",C:"Kiến trúc máy tính đứng độc lập (Stand-alone PC)",D:"Hệ thống mainframe truyền thống chỉ truy cập tại văn phòng"}},
+            {id:47, level:"Nhận biết", text:"Thành phần \"Kiến trúc và mạng\" (Architecture and network) trong một DSS chịu trách nhiệm về:", options:{A:"Việc thiết kế các công thức tính toán tài chính",B:"Cách các thành phần phần cứng và phần mềm của hệ thống được tích hợp và kết nối vật lý",C:"Việc thu thập dữ liệu từ các nguồn bên ngoài như Reuters",D:"Thiết kế các biểu đồ và đồ thị cho báo cáo"}},
+            {id:48, level:"Thông hiểu", text:"Vai trò của thành phần \"Mô hình và công cụ phân tích\" trong Model-driven DSS là gì?", options:{A:"Lưu trữ các tài liệu phi cấu trúc của công đoàn",B:"Cung cấp khả năng tính toán, tối ưu hóa hoặc mô phỏng để phân tích các tình huống thay đổi tham số",C:"Chỉ đóng vai trò hiển thị dữ liệu trên màn hình",D:"Quản lý việc phân quyền truy cập của người dùng"}},
+            {id:49, level:"Thông hiểu", text:"Theo Figure 1.1 (Traditional DSS Components), thành phần \"Communications Component\" đóng vai trò trung gian kết nối giữa các thành phần nào?", options:{A:"Chỉ kết nối Database và Model",B:"Kết nối User Interface với Database Component và Model Component",C:"Chỉ kết nối Database với nguồn dữ liệu bên ngoài",D:"Chỉ kết nối người dùng với các máy in trong mạng"}},
+            {id:50, level:"Vận dụng", text:"Một chuyên gia DSS thực hiện bước 2 của \"Quy trình Kiểm toán Quy trình Quyết định\" (Decision Process Audit) cho IBM Credit Corporation. Hoạt động nào sau đây là đúng cho bước này?", options:{A:"Phỏng vấn các nhân viên tại bộ phận thực hành kinh doanh",B:"Vẽ Sơ đồ luồng dữ liệu (Data Flow Diagram - DFD) để mô tả quy trình hiện tại gồm 5 bước từ lúc nhân viên bán hàng gọi điện đến lúc gửi thư báo giá",C:"Đề xuất một hệ thống DSS mới giúp giảm 90% thời gian chu kỳ",D:"Đánh giá xem các quyết định đưa ra có hiệu quả về chi phí hay không"}}
+        ];
+
+        let userAnswers = {};
+        let isTeacherMode = false;
+
+        function renderQuestions() {
+            const container = document.getElementById("questionsContainer");
+            container.innerHTML = "";
+
+            questions.forEach(q => {
+                const card = document.createElement("div");
+                card.className = "question-card bg-white rounded-3xl shadow-xl p-8";
+                card.innerHTML = `
+                    <div class="flex gap-6">
+                        <div class="w-12 h-12 flex-shrink-0 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center text-2xl font-bold">${q.id}</div>
+                        <div class="flex-1">
+                            <span class="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-blue-100 text-blue-700">${q.level}</span>
+                            <p class="mt-5 text-[17px] leading-relaxed text-gray-800">${q.text}</p>
+                            
+                            <div class="mt-7 space-y-4">
+                                ${Object.keys(q.options).map(key => `
+                                    <label onclick="selectOption(${q.id}, '${key}')" class="option-label flex items-center gap-4 p-5 rounded-2xl border border-gray-200 cursor-pointer hover:border-blue-400">
+                                        <input type="radio" name="q${q.id}" class="w-5 h-5 accent-blue-600">
+                                        <span class="font-medium">${key}. ${q.options[key]}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+
+                            <div id="feedback-${q.id}" class="answer-reveal mt-6 p-6 rounded-2xl bg-emerald-50 border border-emerald-300">
+                                <strong class="text-emerald-700 text-lg">Đáp án đúng: ${answerKey[q.id]}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(qid, option) {
+            userAnswers[qid] = option;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            const percent = Math.round((answered / 50) * 100);
+            document.getElementById("progressBar").style.width = percent + "%";
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            Object.keys(answerKey).forEach(id => {
+                if (userAnswers[id] === answerKey[id]) score++;
+            });
+            alert(`🎯 Kết quả: ${score}/50 câu đúng!\n\nChúc bạn ôn tập tốt!`);
+        }
+
+        function requestPassword() {
+            document.getElementById("passwordModal").classList.remove("hidden");
+            document.getElementById("passwordInput").focus();
+        }
+
+        function closeModal() {
+            document.getElementById("passwordModal").classList.add("hidden");
+            document.getElementById("errorMsg").classList.add("hidden");
+        }
+
+        function checkPassword() {
+            const input = document.getElementById("passwordInput").value.trim();
+            if (input === TEACHER_PASSWORD) {
+                isTeacherMode = true;
+                document.querySelectorAll('.answer-reveal').forEach(el => el.style.display = "block");
+                closeModal();
+                alert("✅ Xác thực thành công!\nĐáp án đã được hiển thị cho Giáo viên.");
+            } else {
+                document.getElementById("errorMsg").classList.remove("hidden");
+                setTimeout(() => document.getElementById("errorMsg").classList.add("hidden"), 2500);
+            }
+        }
+
+        function toggleMode() {
+            alert("Hiện đang ở chế độ Sinh viên.\nGiáo viên vui lòng nhấn nút \"Xem Đáp Án (GV)\" và nhập mật khẩu.");
+        }
+
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>
