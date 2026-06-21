@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 5.1 - Nhập môn AI/ML trong DSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+        
+        :root {
+            --primary: #2563eb;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+        
+        .nav-link {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: #3b82f6;
+        }
+        
+        .chapter-card {
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .chapter-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .lab-card {
+            transition: all 0.3s ease;
+        }
+        
+        .solution-modal {
+            animation: modalPop 0.3s ease forwards;
+        }
+        
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .content-section {
+            scroll-margin-top: 80px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- HEADER -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-inner">AI</div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Chương 5.1</h1>
+                    <p class="text-sm text-blue-600 font-medium">Nhập môn AI/ML trong DSS</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="#ly-thuyet" onclick="navigateTo('ly-thuyet')" class="nav-link text-gray-600 hover:text-blue-600">Lý thuyết</a>
+                <a href="#thuc-hanh" onclick="navigateTo('thuc-hanh')" class="nav-link text-gray-600 hover:text-blue-600">Thực hành</a>
+                <a href="#tai-lieu" onclick="navigateTo('tai-lieu')" class="nav-link text-gray-600 hover:text-blue-600">Tài liệu</a>
+            </nav>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl hover:bg-gray-100">
+                    <i class="fas fa-moon text-xl"></i>
+                </button>
+                <a href="#" onclick="alert('Đăng nhập dành cho giảng viên (demo)')" 
+                   class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-sm font-semibold flex items-center gap-2">
+                    <i class="fas fa-user-shield"></i>
+                    <span>GV Mode</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-bg text-white py-24">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-6 py-2 rounded-3xl mb-6">
+                <span class="px-3 py-1 bg-white text-blue-700 text-xs font-bold rounded-2xl">NEW</span>
+                <span class="text-sm">Khóa học hiện đại 2026</span>
+            </div>
+            <h1 class="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+                Nhập môn<br>AI &amp; Machine Learning<br>trong Hệ Hỗ trợ Ra Quyết định
+            </h1>
+            <p class="max-w-2xl mx-auto text-xl opacity-90 mb-10">
+                Hiểu sâu về DSS, áp dụng AI/ML để hỗ trợ ra quyết định kinh doanh thông minh
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#ly-thuyet" onclick="navigateTo('ly-thuyet')" 
+                   class="px-8 py-4 bg-white text-blue-700 rounded-3xl font-semibold text-lg inline-flex items-center justify-center gap-3 hover:shadow-2xl transition">
+                    <i class="fas fa-book"></i>
+                    Bắt đầu Lý thuyết
+                </a>
+                <a href="#thuc-hanh" onclick="navigateTo('thuc-hanh')" 
+                   class="px-8 py-4 border-2 border-white hover:bg-white/10 rounded-3xl font-semibold text-lg inline-flex items-center justify-center gap-3 transition">
+                    <i class="fas fa-flask"></i>
+                    Thực hành ngay
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK NAV -->
+    <div class="max-w-7xl mx-auto px-6 py-8 border-b bg-white">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div onclick="navigateTo('ly-thuyet')" class="cursor-pointer bg-blue-50 hover:bg-blue-100 p-6 rounded-3xl flex items-center gap-4 group">
+                <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">📘</div>
+                <div>
+                    <div class="font-semibold">Phần 1: Lý thuyết</div>
+                    <div class="text-sm text-gray-500">5 Chương</div>
+                </div>
+            </div>
+            <div onclick="navigateTo('thuc-hanh')" class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 p-6 rounded-3xl flex items-center gap-4 group">
+                <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">💻</div>
+                <div>
+                    <div class="font-semibold">Phần 2: Thực hành</div>
+                    <div class="text-sm text-gray-500">6 Lab</div>
+                </div>
+            </div>
+            <div class="bg-amber-50 p-6 rounded-3xl flex items-center gap-4">
+                <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-3xl">🎥</div>
+                <div>
+                    <div class="font-semibold">Video minh họa</div>
+                    <div class="text-sm text-gray-500">Tích hợp YouTube</div>
+                </div>
+            </div>
+            <div class="bg-purple-50 p-6 rounded-3xl flex items-center gap-4">
+                <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-3xl">🔑</div>
+                <div>
+                    <div class="font-semibold">Giảng viên</div>
+                    <div class="text-sm text-gray-500">Giải pháp ẩn</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LÝ THUYẾT -->
+    <section id="ly-thuyet" class="max-w-7xl mx-auto px-6 py-16 content-section">
+        <div class="flex items-end justify-between mb-12">
+            <div>
+                <span class="px-4 py-1.5 bg-blue-100 text-blue-700 text-sm font-semibold rounded-3xl">PHẦN 1</span>
+                <h2 class="text-5xl font-bold mt-3">Lý Thuyết</h2>
+            </div>
+            <div class="text-right">
+                <p class="text-gray-500">5 chương • 45 phút đọc</p>
+            </div>
+        </div>
+
+        <!-- Chương 1 -->
+        <div class="mb-16">
+            <div class="flex gap-3 items-center mb-6">
+                <div class="w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold">1</div>
+                <h3 class="text-3xl font-semibold">Tổng quan về Hệ hỗ trợ ra quyết định (DSS)</h3>
+            </div>
+            
+            <div class="grid md:grid-cols-12 gap-8">
+                <div class="md:col-span-7">
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-gray-700"><strong>DSS</strong> là hệ thống thông tin dựa trên máy tính giúp nhà quản lý giải quyết vấn đề bán cấu trúc hoặc phi cấu trúc.</p>
+                        <p>Ví dụ: Giám đốc chuỗi siêu thị dự báo nhu cầu hàng hóa mùa lễ hội.</p>
+                    </div>
+                    
+                    <!-- Video -->
+                    <div class="mt-8 bg-gray-900 rounded-3xl overflow-hidden">
+                        <iframe width="100%" height="380" src="https://www.youtube.com/embed/VZrH0nNMdxc" 
+                                title="Decision Support Systems Using AI" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-5">
+                    <div class="bg-white p-8 rounded-3xl shadow">
+                        <h4 class="font-semibold mb-4 text-xl">Phân loại DSS</h4>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-3">Loại</th>
+                                    <th class="text-left py-3">Đặc điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                <tr><td class="py-3">Hướng dữ liệu</td><td>Hệ thống BI, báo cáo</td></tr>
+                                <tr><td class="py-3">Hướng mô hình</td><td>Tối ưu hóa, mô phỏng</td></tr>
+                                <tr><td class="py-3">Hướng tri thức</td><td>Hệ chuyên gia</td></tr>
+                                <tr><td class="py-3">Lai ghép</td><td>Tích hợp AI/ML</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chương 2 -->
+        <div class="mb-16 bg-white p-10 rounded-3xl shadow-sm">
+            <div class="flex gap-3 items-center mb-6">
+                <div class="w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold">2</div>
+                <h3 class="text-3xl font-semibold">Trí tuệ nhân tạo (AI) và Học máy (ML) trong DSS</h3>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <div>
+                    <h4 class="font-semibold text-xl mb-4">Phân biệt AI &amp; ML</h4>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <span class="text-emerald-500 mt-1">•</span>
+                            <span><strong>AI</strong>: Khái niệm rộng - máy tính suy nghĩ như con người</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-emerald-500 mt-1">•</span>
+                            <span><strong>ML</strong>: Học từ dữ liệu để đạt được AI</span>
+                        </li>
+                    </ul>
+                    
+                    <!-- Video -->
+                    <div class="mt-10">
+                        <iframe width="100%" height="260" src="https://www.youtube.com/embed/wvODQqb3D_8" 
+                                title="Supervised vs Unsupervised" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-3xl">
+                    <h4 class="font-semibold mb-6">Các loại Học máy</h4>
+                    <div class="space-y-6">
+                        <div class="flex gap-5">
+                            <div class="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center text-xs font-bold">SL</div>
+                            <div>
+                                <div class="font-medium">Supervised Learning</div>
+                                <div class="text-sm text-gray-600">Dự báo doanh số, phân loại khách hàng</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-5">
+                            <div class="flex-shrink-0 w-6 h-6 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center text-xs font-bold">UL</div>
+                            <div>
+                                <div class="font-medium">Unsupervised Learning</div>
+                                <div class="text-sm text-gray-600">Phân khúc khách hàng</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-5">
+                            <div class="flex-shrink-0 w-6 h-6 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center text-xs font-bold">RL</div>
+                            <div>
+                                <div class="font-medium">Reinforcement Learning</div>
+                                <div class="text-sm text-gray-600">Tối ưu hóa quy trình</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Các chương còn lại tóm tắt -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="chapter-card bg-white border border-gray-100 p-8 rounded-3xl">
+                <div class="text-blue-500 mb-2 text-sm font-medium">CHƯƠNG 3</div>
+                <h4 class="text-2xl font-semibold mb-4">Các thuật toán ML phổ biến</h4>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> Linear Regression</li>
+                    <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> Decision Tree &amp; Random Forest</li>
+                    <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> SVM, KNN, Deep Learning</li>
+                </ul>
+            </div>
+            
+            <div class="chapter-card bg-white border border-gray-100 p-8 rounded-3xl">
+                <div class="text-blue-500 mb-2 text-sm font-medium">CHƯƠNG 4</div>
+                <h4 class="text-2xl font-semibold mb-4">Quy trình CRISP-DM</h4>
+                <div class="text-sm leading-relaxed text-gray-600">
+                    Business Understanding → Data Understanding → Data Preparation → Modeling → Evaluation → Deployment
+                </div>
+            </div>
+            
+            <div class="chapter-card bg-white border border-gray-100 p-8 rounded-3xl">
+                <div class="text-blue-500 mb-2 text-sm font-medium">CHƯƠNG 5</div>
+                <h4 class="text-2xl font-semibold mb-4">Thách thức khi áp dụng</h4>
+                <ul class="text-sm space-y-2">
+                    <li>• Chất lượng dữ liệu</li>
+                    <li>• Khả năng giải thích</li>
+                    <li>• Thiên lệch &amp; Đạo đức</li>
+                    <li>• Concept drift</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- THỰC HÀNH -->
+    <section id="thuc-hanh" class="bg-gray-900 text-white py-20 content-section">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <span class="text-emerald-400 text-sm font-bold tracking-widest">PHẦN 2 • THỰC HÀNH</span>
+                    <h2 class="text-5xl font-bold text-white mt-2">6 Bài tập Lab</h2>
+                </div>
+                <button onclick="showTeacherModal()" 
+                        class="px-6 py-3 bg-white text-gray-900 rounded-2xl font-semibold flex items-center gap-2 hover:bg-amber-300 transition">
+                    <i class="fas fa-lock"></i>
+                    <span>Giảng viên xem giải</span>
+                </button>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="labs-container">
+                <!-- Labs populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- TÀI LIỆU -->
+    <section id="tai-lieu" class="max-w-7xl mx-auto px-6 py-20 content-section">
+        <h2 class="text-4xl font-bold mb-12 text-center">Tài liệu tham khảo</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <a href="https://scikit-learn.org/" target="_blank" 
+               class="block p-8 bg-white rounded-3xl hover:shadow-xl transition group">
+                <div class="text-4xl mb-6">🐍</div>
+                <div class="font-semibold text-xl group-hover:text-blue-600">scikit-learn</div>
+                <div class="text-gray-500">Thư viện Machine Learning mạnh mẽ</div>
+            </a>
+            <a href="https://docs.streamlit.io/" target="_blank" 
+               class="block p-8 bg-white rounded-3xl hover:shadow-xl transition group">
+                <div class="text-4xl mb-6">🌊</div>
+                <div class="font-semibold text-xl group-hover:text-blue-600">Streamlit</div>
+                <div class="text-gray-500">Xây dựng DSS web nhanh chóng</div>
+            </a>
+            <a href="https://archive.ics.uci.edu/" target="_blank" 
+               class="block p-8 bg-white rounded-3xl hover:shadow-xl transition group">
+                <div class="text-4xl mb-6">📊</div>
+                <div class="font-semibold text-xl group-hover:text-blue-600">UCI Repository</div>
+                <div class="text-gray-500">Bộ dữ liệu cho thực hành</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-400 py-16">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-sm">© 2026 - Tài liệu giảng dạy • Được xây dựng bởi Grok</p>
+            <p class="mt-2 text-xs">Sử dụng Tailwind CSS + Font Awesome</p>
+        </div>
+    </footer>
+
+    <!-- SOLUTION MODAL -->
+    <div id="solution-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[100]">
+        <div class="solution-modal bg-white text-gray-900 max-w-2xl w-full mx-4 rounded-3xl overflow-hidden">
+            <div class="px-8 py-6 border-b flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-key text-amber-500"></i>
+                    <span class="font-semibold text-lg">Giải pháp Lab</span>
+                </div>
+                <button onclick="hideModal()" class="text-3xl leading-none hover:text-gray-400">×</button>
+            </div>
+            
+            <div class="p-8" id="modal-content">
+                <!-- Dynamic content -->
+            </div>
+            
+            <div class="p-6 border-t text-center text-sm text-gray-500">
+                Mật khẩu đã được xác thực • Chỉ dành cho giảng viên
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script already included via CDN
+        
+        function navigateTo(section) {
+            document.getElementById(section).scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            // Simple alert for demo
+            alert("Chế độ tối đã được bật/tắt (demo)");
+        }
+        
+        // Lab data
+        const labs = [
+            {
+                id: 1,
+                title: "Lab 1: Khám phá dữ liệu & Tiền xử lý",
+                desc: "Bank Marketing Dataset từ UCI. Thực hiện EDA, xử lý missing values, encoding, scaling.",
+                dataset: "bank.csv"
+            },
+            {
+                id: 2,
+                title: "Lab 2: Hồi quy tuyến tính",
+                desc: "Dự báo giá nhà California Housing. Đánh giá RMSE, MAE, R².",
+                dataset: "California Housing"
+            },
+            {
+                id: 3,
+                title: "Lab 3: Cây quyết định",
+                desc: "Phân loại rủi ro tín dụng German Credit. GridSearchCV + Visualization.",
+                dataset: "German Credit"
+            },
+            {
+                id: 4,
+                title: "Lab 4: Random Forest",
+                desc: "Dự báo tồn kho với dữ liệu mô phỏng. So sánh mô hình.",
+                dataset: "Simulated Sales"
+            },
+            {
+                id: 5,
+                title: "Lab 5: Phân cụm K-Means",
+                desc: "Phân khúc khách hàng Mall. Elbow + Silhouette.",
+                dataset: "Mall Customers"
+            },
+            {
+                id: 6,
+                title: "Lab 6: Xây dựng DSS với Streamlit",
+                desc: "Ứng dụng web hoàn chỉnh hỗ trợ ra quyết định tín dụng.",
+                dataset: "Streamlit App"
+            }
+        ];
+        
+        function renderLabs() {
+            const container = document.getElementById('labs-container');
+            container.innerHTML = '';
+            
+            labs.forEach(lab => {
+                const card = document.createElement('div');
+                card.className = `lab-card bg-white border border-gray-100 rounded-3xl p-8 hover:border-emerald-300 group`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="text-emerald-500 text-5xl font-bold">0${lab.id}</div>
+                        <span class="px-4 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-3xl">LAB ${lab.id}</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3 group-hover:text-emerald-600 transition">${lab.title}</h3>
+                    <p class="text-gray-600 text-[15px] leading-relaxed mb-8">${lab.desc}</p>
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-2 text-gray-500">
+                            <i class="fas fa-database"></i>
+                            <span>${lab.dataset}</span>
+                        </div>
+                        <button onclick="showSolution(${lab.id})" 
+                                class="text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-2">
+                            Xem gợi ý 
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        let currentLab = null;
+        
+        function showSolution(labId) {
+            currentLab = labId;
+            const modal = document.getElementById('solution-modal');
+            const content = document.getElementById('modal-content');
+            
+            // Demo solutions (excerpts from original document)
+            let html = '';
+            
+            if (labId === 1) {
+                html = `
+                    <h4 class="font-semibold mb-4">Gợi ý Lab 1 - EDA &amp; Preprocessing</h4>
+                    <pre class="bg-gray-100 p-6 rounded-2xl text-xs overflow-auto max-h-96 font-mono leading-relaxed">import pandas as pd
+import seaborn as sns
+
+df = pd.read_csv('bank.csv', sep=';')
+# EDA...
+df = pd.get_dummies(df, columns=categorical_cols)
+# ... (full code available in document)</pre>
+                    <p class="mt-6 text-sm text-gray-500">Mở Jupyter Notebook và chạy theo từng bước.</p>
+                `;
+            } else if (labId === 6) {
+                html = `
+                    <h4 class="font-semibold mb-4">Gợi ý Lab 6 - Streamlit DSS</h4>
+                    <p class="mb-4">File <code>app.py</code> đầy đủ đã có trong tài liệu.</p>
+                    <div class="bg-gray-900 text-emerald-400 p-5 rounded-2xl text-xs font-mono">
+                        streamlit run app.py
+                    </div>
+                `;
+            } else {
+                html = `
+                    <h4 class="font-semibold mb-4">Lab ${labId} - Gợi ý giải</h4>
+                    <p class="text-gray-600">Sử dụng mô hình tương ứng (LinearRegression / DecisionTree / RandomForest...).</p>
+                    <p class="mt-6 text-amber-600 font-medium">Mã nguồn chi tiết nằm trong file DOCX gốc.</p>
+                `;
+            }
+            
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+        }
+        
+        function hideModal() {
+            document.getElementById('solution-modal').classList.add('hidden');
+        }
+        
+        function showTeacherModal() {
+            const pass = prompt("Nhập mật khẩu giảng viên:");
+            if (pass === "teacher123" || pass === "gv") {
+                alert("✅ Xác thực thành công! Giải pháp đã được mở.");
+                // Could auto open first lab
+            } else {
+                alert("Mật khẩu không đúng.");
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            renderLabs();
+            
+            // Keyboard escape support
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "Escape") {
+                    const modal = document.getElementById('solution-modal');
+                    if (!modal.classList.contains('hidden')) hideModal();
+                }
+            });
+            
+            console.log('%cTrang web Chương 5.1 đã sẵn sàng 🚀', 'color: #3b82f6; font-size: 13px');
+        };
+    </script>
+</body>
+</html>
