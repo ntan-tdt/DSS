@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 5.1 - Nhập môn AI/ML trong DSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .hero-bg { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        .nav-link { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-link:hover { transform: translateY(-2px); color: #3b82f6; }
+        .question-card { transition: all 0.3s ease; }
+        .option { transition: all 0.2s ease; }
+        .option:hover { background-color: #f8fafc; }
+        .correct { background-color: #d1fae5 !important; border-color: #10b981; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- HEADER -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">AI</div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Chương 5.1</h1>
+                    <p class="text-sm text-blue-600 font-medium">Nhập môn AI/ML trong DSS</p>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="#ly-thuyet" class="nav-link text-gray-600 hover:text-blue-600">Lý thuyết</a>
+                <a href="#thuc-hanh" class="nav-link text-gray-600 hover:text-blue-600">Thực hành</a>
+                <a href="#quiz" class="nav-link text-gray-600 hover:text-blue-600 font-semibold">Trắc nghiệm (50 câu)</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">Nhập môn AI/ML<br>trong Hệ Hỗ trợ Ra Quyết định</h1>
+            <p class="max-w-xl mx-auto text-lg opacity-90">Lý thuyết • Thực hành • Kiểm tra kiến thức</p>
+        </div>
+    </section>
+
+    <!-- QUIZ SECTION -->
+    <section id="quiz" class="max-w-7xl mx-auto px-6 py-16">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-4xl font-bold">50 Câu Hỏi Trắc Nghiệm</h2>
+                <p class="text-gray-600 mt-2">Chương 5.1 - Nhập môn AI/ML trong DSS</p>
+            </div>
+            <button onclick="resetQuiz()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-medium flex items-center gap-2">
+                <i class="fas fa-redo"></i> Làm lại
+            </button>
+        </div>
+
+        <div id="quiz-container" class="space-y-10"></div>
+
+        <div class="mt-12 text-center">
+            <button onclick="submitQuiz()" class="px-12 py-5 bg-emerald-600 hover:bg-emerald-700 text-white text-xl font-semibold rounded-3xl shadow-xl">
+                📊 Nộp bài & Xem kết quả
+            </button>
+        </div>
+
+        <div id="result" class="hidden mt-12 bg-white p-8 rounded-3xl shadow text-center">
+            <h3 class="text-3xl font-bold mb-4" id="score"></h3>
+            <p id="message" class="text-lg"></p>
+        </div>
+    </section>
+
+    <script>
+        const quizData = [
+            {q:"Hệ hỗ trợ ra quyết định (DSS) là gì?", a:"Hệ thống thông tin dựa trên máy tính hỗ trợ nhà quản lý giải quyết vấn đề bán cấu trúc hoặc phi cấu trúc", b:"Hệ thống thay thế hoàn toàn con người", c:"Chỉ là hệ thống báo cáo dữ liệu", d:"Hệ thống chỉ dùng cho lập trình viên", correct:"a"},
+            {q:"DSS không thay thế con người mà cung cấp những gì?", a:"Chỉ phần cứng", b:"Thông tin, phân tích và mô hình hóa", c:"Chỉ giao diện đồ họa", d:"Chỉ lưu trữ dữ liệu", correct:"b"},
+            {q:"Thành phần chính của DSS điển hình gồm bao nhiêu thành phần?", a:"2", b:"4", c:"3", d:"5", correct:"c"},
+            {q:"Cơ sở nào trong DSS chứa các mô hình phân tích?", a:"Cơ sở dữ liệu", b:"Giao diện người dùng", c:"Cơ sở mô hình", d:"Cơ sở tri thức", correct:"c"},
+            {q:"DSS hướng dữ liệu tập trung vào?", a:"Mô hình toán học", b:"Truy xuất và phân tích dữ liệu", c:"Luật suy diễn", d:"Robot học", correct:"b"},
+            {q:"AI là gì?", a:"Chỉ là Machine Learning", b:"Lĩnh vực khoa học máy tính tạo hệ thống thực hiện công việc đòi hỏi trí tuệ con người", c:"Chỉ xử lý ngôn ngữ tự nhiên", d:"Chỉ thị giác máy tính", correct:"b"},
+            {q:"Machine Learning là nhánh nào của AI?", a:"Nhánh lớn nhất", b:"Nhánh về robot", c:"Nhánh con tập trung vào việc máy tính học từ dữ liệu", d:"Nhánh về phần cứng", correct:"c"},
+            {q:"Loại học máy nào sử dụng dữ liệu đã được gán nhãn?", a:"Unsupervised Learning", b:"Reinforcement Learning", c:"Supervised Learning", d:"Semi-supervised Learning", correct:"c"},
+            {q:"Unsupervised Learning thường dùng để?", a:"Dự báo doanh số", b:"Phân khúc khách hàng và phát hiện bất thường", c:"Điều khiển tự động", d:"Phân loại có nhãn", correct:"b"},
+            {q:"Reinforcement Learning học qua cơ chế nào?", a:"Dữ liệu gán nhãn", b:"Tương tác với môi trường và nhận phần thưởng/phạt", c:"Không cần dữ liệu", d:"Chỉ dùng hình ảnh", correct:"b"},
+            {q:"Linear Regression dùng để làm gì?", a:"Phân loại nhị phân", b:"Phân cụm", c:"Dự đoán giá trị số liên tục", d:"Giảm chiều dữ liệu", correct:"c"},
+            {q:"Decision Tree xây dựng dựa trên?", a:"Khoảng cách Euclidean", b:"Cấu trúc cây các quyết định dựa trên đặc trưng", c:"Siêu phẳng tối ưu", d:"Mạng nơ-ron", correct:"b"},
+            {q:"Random Forest là gì?", a:"Một cây quyết định duy nhất", b:"Thuật toán clustering", c:"Tập hợp nhiều cây quyết định để giảm overfitting", d:"Hồi quy tuyến tính nâng cao", correct:"c"},
+            {q:"K-Nearest Neighbors (KNN) hoạt động dựa trên nguyên tắc nào?", a:"Siêu phẳng", b:"Cây quyết định", c:"Mạng sâu", d:"Khoảng cách đến K đối tượng gần nhất", correct:"d"},
+            {q:"Support Vector Machine (SVM) tìm cái gì?", a:"Cây quyết định", b:"Siêu phẳng tối ưu để phân tách lớp", c:"Nhóm gần nhất", d:"Mô hình tuyến tính", correct:"b"},
+            {q:"Deep Learning nổi bật nhờ khả năng gì?", a:"Dễ giải thích", b:"Chạy nhanh trên CPU", c:"Không cần nhiều dữ liệu", d:"Sử dụng mạng nơ-ron nhiều tầng để học biểu diễn phức tạp", correct:"d"},
+            {q:"CRISP-DM là gì?", a:"Ngôn ngữ lập trình", b:"Quy trình chuẩn cho dự án khai phá dữ liệu và Machine Learning", c:"Công cụ trực quan hóa", d:"Cơ sở dữ liệu", correct:"b"},
+            {q:"Bước đầu tiên trong quy trình CRISP-DM là gì?", a:"Data Preparation", b:"Modeling", c:"Business Understanding", d:"Deployment", correct:"c"},
+            {q:"Bước nào trong CRISP-DM liên quan đến huấn luyện mô hình?", a:"Business Understanding", b:"Modeling", c:"Data Understanding", d:"Evaluation", correct:"b"},
+            {q:"Thách thức lớn nhất khi áp dụng ML trong DSS là gì?", a:"Tốc độ tính toán", b:"Chất lượng dữ liệu, thiên lệch và khả năng giải thích", c:"Giao diện người dùng", d:"Số lượng thuật toán", correct:"b"},
+            {q:"Explainability trong ML nghĩa là gì?", a:"Tốc độ dự đoán", b:"Độ chính xác cao", c:"Khả năng giải thích tại sao mô hình đưa ra kết quả", d:"Kích thước mô hình nhỏ", correct:"c"},
+            {q:"Concept drift là hiện tượng gì?", a:"Tăng tốc độ huấn luyện", b:"Sự thay đổi mối quan hệ giữa dữ liệu và kết quả theo thời gian", c:"Lỗi phần cứng", d:"Thiếu dữ liệu huấn luyện", correct:"b"},
+            {q:"Bias trong mô hình ML có thể dẫn đến?", a:"Tăng độ chính xác", b:"Quyết định không công bằng", c:"Giảm thời gian huấn luyện", d:"Tăng khả năng giải thích", correct:"b"},
+            {q:"Ví dụ điển hình của DSS hướng mô hình là gì?", a:"Báo cáo BI", b:"Hệ chuyên gia", c:"Mô hình tối ưu hóa và mô phỏng", d:"Chatbot", correct:"c"},
+            {q:"Phân loại khách hàng thường dùng loại học máy nào?", a:"Supervised", b:"Unsupervised", c:"Reinforcement", d:"Linear Regression", correct:"b"},
+            {q:"Dự báo doanh số thường dùng thuật toán nào?", a:"K-Means", b:"Linear Regression hoặc Random Forest", c:"KNN chỉ phân loại", d:"PCA", correct:"b"},
+            {q:"Mô hình nào dễ giải thích nhất trong các lựa chọn sau?", a:"Deep Learning", b:"Decision Tree", c:"SVM", d:"Random Forest", correct:"b"},
+            {q:"Streamlit dùng để làm gì trong Lab 6?", a:"Huấn luyện mô hình", b:"Xử lý dữ liệu", c:"Xây dựng ứng dụng web DSS nhanh chóng", d:"Phân tích thống kê", correct:"c"},
+            {q:"Giá trị R² trong hồi quy đánh giá điều gì?", a:"Độ chính xác phân loại", b:"Mức độ mô hình giải thích được biến thiên của dữ liệu", c:"Tốc độ huấn luyện", d:"Số lượng đặc trưng", correct:"b"},
+            {q:"GridSearchCV dùng để làm gì?", a:"Tạo dữ liệu", b:"Tinh chỉnh siêu tham số (hyperparameter tuning)", c:"Trực quan hóa cây", d:"Phân cụm", correct:"b"},
+            {q:"Elbow Method dùng trong thuật toán nào?", a:"Linear Regression", b:"Decision Tree", c:"K-Means Clustering", d:"SVM", correct:"c"},
+            {q:"Feature Importance thường được dùng trong mô hình nào?", a:"KNN", b:"Random Forest và Decision Tree", c:"K-Means", d:"PCA", correct:"b"},
+            {q:"Một DSS tốt cần có khả năng nào?", a:"Chỉ nhanh", b:"Hỗ trợ con người ra quyết định tốt hơn", c:"Chỉ đẹp giao diện", d:"Không cần dữ liệu", correct:"b"},
+            {q:"UCI Machine Learning Repository là gì?", a:"Công cụ huấn luyện", b:"Thư viện Python", c:"Kho dữ liệu công khai dùng cho thực hành", d:"Nền tảng Streamlit", correct:"c"},
+            {q:"Scikit-learn là thư viện dùng cho?", a:"Xây dựng web", b:"Machine Learning cổ điển", c:"Trực quan hóa dữ liệu", d:"Quản lý cơ sở dữ liệu", correct:"b"},
+            {q:"Trong Lab 1, ta thường dùng kỹ thuật nào để mã hóa biến phân loại?", a:"Chỉ Label Encoding", b:"One-Hot Encoding và Label Encoding", c:"Chỉ StandardScaler", d:"PCA", correct:"b"},
+            {q:"Confusion Matrix dùng để đánh giá mô hình nào?", a:"Hồi quy", b:"Phân loại", c:"Phân cụm", d:"Hồi quy tuyến tính", correct:"b"},
+            {q:"RMSE và MAE dùng để đánh giá mô hình?", a:"Phân loại", b:"Clustering", c:"Hồi quy (dự báo số)", d:"Reinforcement", correct:"c"},
+            {q:"Mục tiêu chính của DSS là gì?", a:"Thay thế con người", b:"Chỉ lưu dữ liệu", c:"Hỗ trợ con người ra quyết định tốt hơn", d:"Chỉ vẽ biểu đồ", correct:"c"},
+            {q:"Mô hình nào kết hợp nhiều Decision Tree?", a:"Linear Regression", b:"KNN", c:"Random Forest", d:"SVM", correct:"c"},
+            {q:"Trong Lab 5, phương pháp nào dùng để chọn số cụm tối ưu?", a:"GridSearchCV", b:"Elbow Method và Silhouette Score", c:"Cross Validation", d:"R² Score", correct:"b"},
+            {q:"Thiên lệch (bias) trong dữ liệu huấn luyện có thể gây ra?", a:"Mô hình tốt hơn", b:"Mô hình kế thừa và khuếch đại thiên lệch", c:"Tăng explainability", d:"Giảm concept drift", correct:"b"},
+            {q:"Lab 6 yêu cầu xây dựng gì?", a:"Chỉ mô hình", b:"Chỉ báo cáo", c:"Ứng dụng Streamlit DSS hoàn chỉnh", d:"Chỉ dữ liệu", correct:"c"},
+            {q:"Phân tích hệ số hồi quy trong Linear Regression giúp làm gì?", a:"Phân cụm", b:"Mã hóa dữ liệu", c:"Xác định các yếu tố ảnh hưởng mạnh đến biến mục tiêu", d:"Tăng tốc độ", correct:"c"},
+            {q:"plot_tree trong sklearn dùng để?", a:"Vẽ ma trận tương quan", b:"Trực quan hóa cây quyết định", c:"Vẽ biểu đồ phân phối", d:"Phân cụm", correct:"b"},
+            {q:"cross_val_score dùng để?", a:"Huấn luyện mô hình", b:"Đánh giá mô hình qua Cross-Validation", c:"Tạo dữ liệu", d:"Mã hóa", correct:"b"},
+            {q:"Một trong những lợi ích của ML trong DSS là?", a:"Giảm chi phí phần cứng", b:"Tự động phát hiện mẫu và dự báo chính xác", c:"Không cần lập trình", d:"Chỉ dùng cho marketing", correct:"b"},
+            {q:"German Credit Data thường dùng cho bài toán gì?", a:"Dự báo giá nhà", b:"Phân loại rủi ro tín dụng", c:"Phân cụm khách hàng", d:"Dự báo tồn kho", correct:"b"},
+            {q:"California Housing dataset dùng cho?", a:"Phân loại", b:"Hồi quy dự báo giá nhà", c:"Clustering", d:"Reinforcement", correct:"b"},
+            {q:"Bank Marketing Dataset thường dùng cho?", a:"Dự báo giá", b:"Phân cụm", c:"Dự đoán khách hàng có đăng ký sản phẩm hay không", d:"Phát hiện gian lận", correct:"c"}
+        ];
+
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const div = document.createElement('div');
+                div.className = 'question-card bg-white border border-gray-200 rounded-3xl p-8 shadow-sm';
+                div.innerHTML = `
+                    <div class="flex gap-4">
+                        <span class="font-bold text-blue-600 text-2xl shrink-0">${index + 1}.</span>
+                        <div class="flex-1">
+                            <p class="font-medium text-lg leading-relaxed mb-6">${q.q}</p>
+                            <div class="space-y-3" id="options-${index}">
+                                <label class="option flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:border-blue-300">
+                                    <input type="radio" name="q${index}" value="a" class="w-5 h-5 accent-blue-600" onchange="saveAnswer(${index}, 'a')">
+                                    <span class="font-medium">${q.a}</span>
+                                </label>
+                                <label class="option flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:border-blue-300">
+                                    <input type="radio" name="q${index}" value="b" class="w-5 h-5 accent-blue-600" onchange="saveAnswer(${index}, 'b')">
+                                    <span class="font-medium">${q.b}</span>
+                                </label>
+                                <label class="option flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:border-blue-300">
+                                    <input type="radio" name="q${index}" value="c" class="w-5 h-5 accent-blue-600" onchange="saveAnswer(${index}, 'c')">
+                                    <span class="font-medium">${q.c}</span>
+                                </label>
+                                <label class="option flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:border-blue-300">
+                                    <input type="radio" name="q${index}" value="d" class="w-5 h-5 accent-blue-600" onchange="saveAnswer(${index}, 'd')">
+                                    <span class="font-medium">${q.d}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function saveAnswer(index, answer) {
+            userAnswers[index] = answer;
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            const resultDiv = document.getElementById('result');
+            
+            quizData.forEach((q, i) => {
+                if (userAnswers[i] === q.correct) score++;
+            });
+            
+            const percentage = Math.round((score / quizData.length) * 100);
+            
+            document.getElementById('score').innerHTML = `Điểm số: <span class="text-emerald-600">${score}/${quizData.length}</span> (${percentage}%)`;
+            document.getElementById('message').innerHTML = percentage >= 80 ? 
+                "🎉 Xuất sắc! Bạn đã nắm vững kiến thức Chương 5.1." : 
+                percentage >= 60 ? 
+                "👍 Tốt! Bạn cần ôn lại một số phần." : 
+                "📚 Cần ôn tập thêm. Hãy xem lại lý thuyết và thực hành.";
+            
+            resultDiv.classList.remove('hidden');
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            userAnswers = new Array(quizData.length).fill(null);
+            document.getElementById('result').classList.add('hidden');
+            renderQuiz();
+        }
+
+        window.onload = renderQuiz;
+    </script>
+
+    <footer class="bg-gray-900 text-gray-400 py-12 text-center text-sm">
+        <p>© 2026 - Tài liệu giảng dạy Chương 5.1 • Được hỗ trợ bởi Grok</p>
+    </footer>
+</body>
+</html>
